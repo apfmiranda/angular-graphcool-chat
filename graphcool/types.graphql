@@ -7,20 +7,28 @@ type User @model {
   email: String! @isUnique
   createdAt: DateTime!
   updatedAt: DateTime!
+  chats: [Chat!]! @relation(name: "UsersOnChats")
+  messages: [Message!]! @relation(name: "MessagesOnUser")
+  photo: File @relation(name: "UsersPhoto")
 }
 
 type Chat @model {
   id: ID! @isUnique
   title: String
-  isGroup: boolean!
+  isGroup: boolean! @defaultValue(value: "true")
   createdAt: DateTime!
   updatedAt: DateTime!
+  users: [User!]! @relation(name: "UsersOnChats")
+  messages: [Message!]! @relation(name: "MessagesOnChat")
+  photo: File @relation(name: "ChatPhoto")
 }
 
 type Message @model {
   id: ID! @isUnique
   text: String!
   createdAt: DateTime!
+  sender: [User!]! @relation(name: "MessagesOnUser")
+  chat: Chat! @relation(name: "MessagesOnChat")
 }
 
 type File @model {
@@ -32,4 +40,6 @@ type File @model {
   contentType: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  user: User @relation(name: "UsersPhoto")
+  chat: Chat @relation(name: "ChatPhoto")
 }

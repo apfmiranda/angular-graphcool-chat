@@ -1,10 +1,9 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { Subscription } from 'rxjs';
-import { environment } from './../environments/environment';
-
+import { NetworkStatus } from 'apollo-client';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 
 @Component({
@@ -14,17 +13,69 @@ import { environment } from './../environments/environment';
 })
 export class AppComponent implements OnInit, OnDestroy {
 
+  u = {
+    name: 'Fulano de Tal',
+    email: 'fulano@gmail.com',
+    password: '123456'
+  };
+
   users: any[];
-  loading = true;
+  loading = false;
   error: any;
+  texto = '';
+  form: FormGroup;
 
   private querySubscription: Subscription;
+  private mutationSubscription: Subscription;
 
-  constructor(
-    private http: HttpClient,
-    private apollo: Apollo) {}
+  constructor(private apollo: Apollo, private fb: FormBuilder) {
+    }
+
+  ngOnDestroy(): void {
+    this.querySubscription.unsubscribe();
+    this.mutationSubscription.unsubscribe();
+  }
 
   ngOnInit() {
+    this.form = this.fb.group({
+      name: [null, [Validators.required, Validators.minLength(3)]],
+      email: [null, [Validators.required, Validators.email]],
+      password: [null, [Validators.required, Validators.minLength(3)]],
+      hideRequired: false,
+      floatLabel: 'auto',
+    });
+  }
+
+
+  async changetexto(status: number) {
+    switch (status) {
+      case NetworkStatus.loading:
+        this.texto = 'Carregando...';
+        break;
+      case NetworkStatus.setVariables:
+        this.texto = 'setVariables';
+        break;
+      case NetworkStatus.fetchMore:
+        this.texto = 'fetchMore';
+        break;
+      case NetworkStatus.refetch:
+        this.texto = 'refetch';
+        break;
+      case NetworkStatus.poll:
+        this.texto = 'poll';
+        break;
+      case NetworkStatus.ready:
+        this.texto = 'ready';
+        break;
+      case NetworkStatus.error:
+        this.texto = 'error';
+        break;
+    }
+    console.log(this.texto);
+  }
+
+  allUsers(): void {
+    this.loading = true;
     this.querySubscription = this.apollo
       .watchQuery<any>({
         query: gql`query {
@@ -38,32 +89,18 @@ export class AppComponent implements OnInit, OnDestroy {
       .valueChanges.subscribe(result => {
         this.users = result.data.allUsers;
         this.loading = result.loading;
+        this.changetexto(result.networkStatus);
+        console.log(result);
       }, err => {this.error = err; });
   }
 
-  ngOnDestroy(): void {
-    this.querySubscription.unsubscribe();
-  }
-
-  allUsers(): void {
-    const body = {
-      query : `query {
-                allUsers {
-                  id
-                  email
-                  name
-                }
-              }`
-    };
-
-    this.http.post(environment.API_URL, body)
-      .subscribe(res => console.log('Query: ', res));
-
-  }
-
   createUser(): void {
-    const body = {
-      query: `
+    this.u.name = this.form.get('name').value;
+    this.u.email = this.form.get('email').value;
+    this.u.password = this.form.get('password').value;
+
+    this.mutationSubscription = this.apollo.mutate({
+      mutation: gql`
         mutation CreateNewUser($name: String!, $email: String!, $password: String!){
           createUser(name: $name, email: $email, password: $password){
             id
@@ -73,13 +110,11 @@ export class AppComponent implements OnInit, OnDestroy {
         }
         `,
         variables: {
-          name: 'José Manuel',
-          email: 'jose@gmail.com',
-          password: '123'
+          name: this.u.name,
+          email: this.u.email,
+          password: this.u.password
         }
-    };
-
-    this.http.post(environment.API_URL, body)
-      .subscribe(res => console.log('Mutation: ', res));
+    }).subscribe(res => console.log('Mutation: ', res));
   }
+
 }

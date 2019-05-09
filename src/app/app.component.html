@@ -1,15 +1,41 @@
 <mat-toolbar color="primary">
-  <span>Application Title</span>
+  <span>Angular Graphcool Chat</span>
 </mat-toolbar>
 
-<mat-list>
-  <mat-list-item> Angular </mat-list-item>
-  <mat-list-item> Apollo </mat-list-item>
-  <mat-list-item> GraphQL </mat-list-item>
-  <mat-list-item> Graphcool </mat-list-item>
-</mat-list>
-<button (click)="createUser()">Cria usuario teste José</button>
-<button (click)="allUsers()">Busca usuarios</button>
+
+<div class="example-container">
+  <form class="example-container" [formGroup]="form">
+    <mat-form-field
+      [hideRequiredMarker]="form.value.hideRequired"
+      [floatLabel]="form.value.floatLabel">
+      <input formControlName="name"  id="name" matInput placeholder="Simple placeholder" required>
+    </mat-form-field>
+
+    <mat-form-field
+      [hideRequiredMarker]="form.value.hideRequired"
+      [floatLabel]="form.value.floatLabel">
+      <input formControlName="email"  id="email" matInput placeholder="email">
+    </mat-form-field>
+
+    <mat-form-field
+      [hideRequiredMarker]="form.value.hideRequired"
+      [floatLabel]="form.value.floatLabel">
+      <input formControlName="password"  id="password" matInput placeholder="password">
+    </mat-form-field>
+  </form>
+</div>
+
+<button mat-raised-button
+  color="primary"
+  (click)="createUser()"
+  style='margin: 8px'
+  >Cria usuario</button>
+<button mat-raised-button
+  color="primary"
+  (click)="allUsers()"
+  style='margin: 8px'
+  >Busca usuarios</button>
+
 
 <div *ngIf="loading">
   Carregando...
@@ -17,10 +43,12 @@
 <div *ngIf="error">
   Error :(
 </div>
-<div *ngIf="users">
-  <div *ngFor="let user of users">
-    <p>{{ user.name }}:<{{ user.email }}></p>
-  </div>
-</div>
+<mat-list *ngIf="users">
+
+  <mat-list-item *ngFor="let user of users">
+    <mat-icon mat-list-icon>person</mat-icon>
+    {{ user.name }}:<{{ user.email }}>
+  </mat-list-item>
+</mat-list>
 
 <router-outlet></router-outlet>

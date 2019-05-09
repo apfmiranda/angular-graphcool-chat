@@ -5,6 +5,7 @@ type User @model {
   id: ID! @isUnique
   name: String!
   email: String! @isUnique
+  password: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   chats: [Chat!]! @relation(name: "UsersOnChats")
@@ -15,7 +16,7 @@ type User @model {
 type Chat @model {
   id: ID! @isUnique
   title: String
-  isGroup: boolean! @defaultValue(value: "true")
+  isGroup: Boolean! @defaultValue(value: "true")
   createdAt: DateTime!
   updatedAt: DateTime!
   users: [User!]! @relation(name: "UsersOnChats")

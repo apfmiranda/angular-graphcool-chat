@@ -1,7 +1,10 @@
-import { environment } from './../environments/environment';
-import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { variable } from '@angular/compiler/src/output/output_ast';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import gql from 'graphql-tag';
+import { Subscription } from 'rxjs';
+import { environment } from './../environments/environment';
+
 
 
 @Component({
@@ -9,9 +12,38 @@ import { variable } from '@angular/compiler/src/output/output_ast';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
 
-  constructor(private http: HttpClient) {}
+  users: any[];
+  loading = true;
+  error: any;
+
+  private querySubscription: Subscription;
+
+  constructor(
+    private http: HttpClient,
+    private apollo: Apollo) {}
+
+  ngOnInit() {
+    this.querySubscription = this.apollo
+      .watchQuery<any>({
+        query: gql`query {
+                allUsers {
+                  id
+                  email
+                  name
+                }
+              }`,
+      })
+      .valueChanges.subscribe(result => {
+        this.users = result.data.allUsers;
+        this.loading = result.loading;
+      }, err => {this.error = err; });
+  }
+
+  ngOnDestroy(): void {
+    this.querySubscription.unsubscribe();
+  }
 
   allUsers(): void {
     const body = {
@@ -25,7 +57,7 @@ export class AppComponent {
     };
 
     this.http.post(environment.API_URL, body)
-      .subscribe(res => console.log(res));
+      .subscribe(res => console.log('Query: ', res));
 
   }
 
@@ -48,6 +80,6 @@ export class AppComponent {
     };
 
     this.http.post(environment.API_URL, body)
-      .subscribe(res => console.log(res));
+      .subscribe(res => console.log('Mutation: ', res));
   }
 }

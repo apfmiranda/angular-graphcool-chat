@@ -7,10 +7,20 @@
   <mat-list-item> Apollo </mat-list-item>
   <mat-list-item> GraphQL </mat-list-item>
   <mat-list-item> Graphcool </mat-list-item>
- </mat-list>
- <button (click)="createUser()" >Cria teste usuario José</button>
- <button (click)="allUsers()" >Busca usuarios</button>
+</mat-list>
+<button (click)="createUser()">Cria usuario teste José</button>
+<button (click)="allUsers()">Busca usuarios</button>
 
-
+<div *ngIf="loading">
+  Carregando...
+</div>
+<div *ngIf="error">
+  Error :(
+</div>
+<div *ngIf="users">
+  <div *ngFor="let user of users">
+    <p>{{ user.name }}:<{{ user.email }}></p>
+  </div>
+</div>
 
 <router-outlet></router-outlet>

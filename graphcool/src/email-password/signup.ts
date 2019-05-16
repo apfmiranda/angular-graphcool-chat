@@ -1,4 +1,4 @@
-import Gaphcool, { fromEvent, FunctionEvent } from 'graphcool-lib';
+import { default as Graphcool, fromEvent, FunctionEvent } from 'graphcool-lib';
 import { GraphQLClient } from 'graphql-request';
 import * as bcrypt from 'bcryptjs';
 import * as validator from 'validator';
@@ -19,7 +19,7 @@ export default async (event: FunctionEvent<EventData>) => {
   console.log(event);
 
   try {
-    const graphcool: Gaphcool = fromEvent<EventData>(event);
+    const graphcool: Graphcool = fromEvent<EventData>(event);
     const api: GraphQLClient = graphcool.api('simple/v1');
 
     const { name, email, password } = event.data;
@@ -70,7 +70,7 @@ async function getUser(api: GraphQLClient, email: string): Promise<{ User }> {
 
 async function createGraphcoolUser(api: GraphQLClient, name: string, email: string, password: string): Promise<string> {
   const mutation = `
-    mutation createGraphcoolUser($name: String, $email: String!, $password: String!) {
+    mutation createGraphcoolUser($name: String!, $email: String!, $password: String!) {
       createUser(
         name: $name,
         email: $email,
@@ -82,6 +82,7 @@ async function createGraphcoolUser(api: GraphQLClient, name: string, email: stri
   `;
 
   const variables = {
+    name,
     email,
     password
   };

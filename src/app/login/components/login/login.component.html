@@ -2,22 +2,50 @@
   <mat-card>
 
     <mat-card-title>
-      <mat-toolbar color=primary>Sing in</mat-toolbar>
+      <mat-toolbar color=primary>{{ configs.actionText }}</mat-toolbar>
     </mat-card-title>
 
     <mat-card-content>
 
       <form (submit)="onSubmit()" [formGroup]="loginForm">
 
+
+        <mat-form-field *ngIf="!configs.isLogin" >
+          <input matInput type="text" placeholder="nome" formControlName="name">
+          <mat-error *ngIf="(name.hasError('required') && name.touched || name.dirty)" >
+            Campo obrigatório
+          </mat-error>
+        </mat-form-field>
+
         <mat-form-field>
           <input matInput type="email" placeholder="Email" formControlName="email">
+          <mat-error *ngIf="(email.hasError('required') && email.touched || email.dirty)" >
+            Campo obrigatório
+          </mat-error>
+          <mat-error *ngIf="(email.hasError('email') && email.touched || email.dirty)" >
+            Email inválido
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field>
           <input matInput type="password" placeholder="Senha" formControlName="password">
+          <mat-error *ngIf="(password.hasError('required') && password.touched || password.dirty)" >
+            Campo obrigatório
+          </mat-error>
         </mat-form-field>
 
-        <button type="submit" mat-stroked-button color="primary" [disabled]="loginForm.invalid">Sing in</button>
+        <button
+          type="submit"
+          mat-stroked-button color="primary"
+          [disabled]="loginForm.invalid"
+          >{{ configs.actionText }}
+        </button>
+        <button
+          type="button"
+          mat-stroked-button color="primary"
+          (click)="changeAction()"
+          >{{ configs.buttonActionText }}
+        </button>
       </form>
 
     </mat-card-content>

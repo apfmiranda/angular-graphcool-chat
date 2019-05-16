@@ -9,9 +9,9 @@ import { CoreModule } from './core/core.module';
     AppComponent
   ],
   imports: [
-    AppRoutingModule,
     CoreModule,
-    LoginModule
+    LoginModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

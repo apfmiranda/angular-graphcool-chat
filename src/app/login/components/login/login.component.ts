@@ -1,3 +1,4 @@
+import { AuthService } from './../../../core/services/auth.service';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 
@@ -17,7 +18,9 @@ export class LoginComponent implements OnInit {
 
   private nameControl = new FormControl('', [ Validators.required, Validators.minLength(5)]);
 
-  constructor(private fb: FormBuilder) { }
+  constructor(
+    private authService: AuthService,
+    private fb: FormBuilder) { }
 
   ngOnInit() {
     this.createForm();

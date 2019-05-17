@@ -1,4 +1,4 @@
-import { AUTHENTICATE_USER_MUTATION } from './auth.graphql';
+import { AUTHENTICATE_USER_MUTATION, SIGNUP_USER_MUTATION } from './auth.graphql';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Apollo } from 'apollo-angular';
@@ -9,7 +9,7 @@ import { Apollo } from 'apollo-angular';
 export class AuthService {
 
   constructor(private apollo: Apollo) {
-    this.signinUser({email: 'deadpool@gmail.com', password: '123456'})
+    this.signupUser({name: 'Usuario Teste', email: 'teste@gmail.com', password: '123456'})
     .subscribe(response => console.log(response));
    }
 
@@ -18,6 +18,12 @@ export class AuthService {
       mutation: AUTHENTICATE_USER_MUTATION,
       variables
     });
+  }
 
+  signupUser(variables: {name: string, email: string, password: string}): Observable<{id: string, token: string}> {
+    return this.apollo.mutate({
+      mutation: SIGNUP_USER_MUTATION,
+      variables
+    });
   }
 }

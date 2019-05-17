@@ -1,3 +1,4 @@
+import { ErrorService } from './../../../core/services/error.service';
 import { Observable } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 
@@ -25,6 +26,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
+    private errorService: ErrorService,
     private fb: FormBuilder) { }
 
   ngOnInit() {
@@ -53,7 +55,9 @@ export class LoginComponent implements OnInit, OnDestroy {
       res => {
         console.log('redirecting...', res);
       },
-      error => {},
+      error => {
+        console.log('Error: ', this.errorService.getErrorMessage(error));
+      },
       () => console.log('Observable completado!')
     );
 

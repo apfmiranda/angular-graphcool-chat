@@ -9,6 +9,7 @@ import { tap, map, catchError } from 'rxjs/operators';
 })
 export class AuthService {
 
+  redirectUrl: string;
   private _isAuthenticated = new ReplaySubject<boolean>(1);
 
   constructor(private apollo: Apollo) {

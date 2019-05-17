@@ -2,7 +2,11 @@
   <mat-card>
 
     <mat-card-title>
-      <mat-toolbar color=primary>{{ configs.actionText }}</mat-toolbar>
+      <mat-toolbar color=primary>
+        <span>{{ configs.actionText }}</span>
+        <span class="spacer"></span>
+        <mat-spinner *ngIf="configs.isLoading"  diameter="25" strokewidth="2" ></mat-spinner>
+      </mat-toolbar>
     </mat-card-title>
 
     <mat-card-content>

@@ -5,6 +5,7 @@ import { takeWhile } from 'rxjs/operators';
 import { AuthService } from './../../../core/services/auth.service';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   configs = {
     isLogin: true,
     actionText: 'Login',
-    buttonActionText: 'Criar uma conta'
+    buttonActionText: 'Criar uma conta',
+    isLoading: false
   };
 
   private nameControl = new FormControl('', [ Validators.required, Validators.minLength(5)]);
@@ -27,7 +29,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private errorService: ErrorService,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar
+  ) { }
 
   ngOnInit() {
     this.createForm();
@@ -43,6 +47,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   onSubmit() {
     console.log(this.loginForm.value);
 
+    this.configs.isLoading = true;
+
     const operation =
       (this.configs.isLogin)
         ? this.authService.signinUser(this.loginForm.value)
@@ -54,13 +60,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     ).subscribe(
       res => {
         console.log('redirecting...', res);
+        this.configs.isLoading = false;
       },
       error => {
-        console.log('Error: ', this.errorService.getErrorMessage(error));
+        console.log(error);
+        this.configs.isLoading = false;
+        this.snackBar.open(this.errorService.getErrorMessage(error), 'ok', {duration: 5000, verticalPosition: 'top'});
       },
       () => console.log('Observable completado!')
     );
-
   }
 
   changeAction(): void {

@@ -8,10 +8,7 @@ import { Apollo } from 'apollo-angular';
 })
 export class AuthService {
 
-  constructor(private apollo: Apollo) {
-    this.signupUser({name: 'Usuario Teste', email: 'teste@gmail.com', password: '123456'})
-    .subscribe(response => console.log(response));
-   }
+  constructor(private apollo: Apollo) {}
 
   signinUser(variables: {email: string, password: string}): Observable<{id: string, token: string}> {
     return this.apollo.mutate({

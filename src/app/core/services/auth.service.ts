@@ -1,3 +1,4 @@
+import { StorageKeys } from './../../storage-keys';
 import { AUTHENTICATE_USER_MUTATION, SIGNUP_USER_MUTATION } from './auth.graphql';
 import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject, throwError } from 'rxjs';
@@ -26,9 +27,9 @@ export class AuthService {
       variables
     }).pipe(
       map(res => res.data.authenticateUser),
-      tap(res => this.setAuthState(res != null)),
+      tap(res => this.setAuthState({token: res && res.token, isAuthenticated: res != null})),
       catchError(err => {
-        this.setAuthState(false);
+        this.setAuthState({token: null, isAuthenticated: false});
         return throwError(err);
       })
     );
@@ -40,15 +41,18 @@ export class AuthService {
       variables
     }).pipe(
       map(res => res.data.authenticateUser),
-      tap(res => this.setAuthState(res != null)),
+      tap(res => this.setAuthState({token: res && res.token, isAuthenticated: res != null})),
       catchError(err => {
-        this.setAuthState(false);
+        this.setAuthState({token: null, isAuthenticated: false});
         return throwError(err);
       })
     );
   }
 
-  private setAuthState(isAuthenticated: boolean): void {
-    this._isAuthenticated.next(isAuthenticated);
+  private setAuthState(authData: { token: string, isAuthenticated: boolean}): void {
+    if (authData.isAuthenticated) {
+      localStorage.setItem(StorageKeys.AUTH_TOKEN, authData.token);
+    }
+    this._isAuthenticated.next(authData.isAuthenticated);
   }
 }

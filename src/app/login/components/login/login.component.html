@@ -38,6 +38,12 @@
           </mat-error>
         </mat-form-field>
 
+        <mat-slide-toggle
+          color="primary"
+          [checked]="authService.keepSigned"
+          (change)="onKeepSigned()"
+          >Continuar logado</mat-slide-toggle>
+
         <button
           type="submit"
           mat-stroked-button color="primary"

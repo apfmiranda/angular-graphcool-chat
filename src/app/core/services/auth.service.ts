@@ -11,10 +11,16 @@ import { tap, map, catchError } from 'rxjs/operators';
 export class AuthService {
 
   redirectUrl: string;
+  keepSigned: boolean;
   private _isAuthenticated = new ReplaySubject<boolean>(1);
 
   constructor(private apollo: Apollo) {
     this.isAuthenticated.subscribe(is => console.log(is));
+    this.init();
+  }
+
+  init(): void {
+    this.keepSigned = JSON.parse(localStorage.getItem(StorageKeys.KEEP_SIGNED));
   }
 
   get isAuthenticated(): Observable<boolean> {
@@ -47,6 +53,11 @@ export class AuthService {
         return throwError(err);
       })
     );
+  }
+
+  toggleKeepSigned(): void {
+    this.keepSigned = !this.keepSigned;
+    localStorage.setItem(StorageKeys.KEEP_SIGNED, this.keepSigned.toString());
   }
 
   private setAuthState(authData: { token: string, isAuthenticated: boolean}): void {

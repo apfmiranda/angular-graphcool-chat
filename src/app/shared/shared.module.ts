@@ -7,7 +7,8 @@ import {
   MatInputModule,
   MatButtonModule,
   MatProgressSpinnerModule,
-  MatSnackBarModule } from '@angular/material';
+  MatSnackBarModule,
+  MatSlideToggleModule } from '@angular/material';
 
 @NgModule({
   exports: [
@@ -18,7 +19,8 @@ import {
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatSlideToggleModule
   ]
 })
 export class SharedModule { }

@@ -1,44 +1,64 @@
+import { HttpClientModule, HttpHeaders } from '@angular/common/http';
+import { StorageKeys } from './storage-keys';
 import { NgModule } from '@angular/core';
-import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
+import { ApolloModule, APOLLO_OPTIONS, Apollo } from 'apollo-angular';
 import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { environment } from './../environments/environment';
 import { onError } from 'apollo-link-error';
 import { ApolloLink } from 'apollo-link';
 
-
-const linkError = onError(({ graphQLErrors, networkError }) => {
-  if (graphQLErrors) {
-    graphQLErrors.map(({ message, locations, path }) =>
-      console.log(
-        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-      ),
-    );
-  }
-  if (networkError) {
-    console.log(`[Network error]: ${networkError}`);
-  }
-});
-
-const uri = environment.API_URL; // <-- add the URL of the GraphQL server here
-export function createApollo(httpLink: HttpLink) {
-  return {
-    link: ApolloLink.from([
-      linkError,
-      httpLink.create({uri}),
-    ]),
-    cache: new InMemoryCache(),
-  };
-}
-
 @NgModule({
-  exports: [ApolloModule, HttpLinkModule],
-  providers: [
-    {
-      provide: APOLLO_OPTIONS,
-      useFactory: createApollo,
-      deps: [HttpLink],
-    },
-  ],
+  imports: [
+    HttpClientModule,
+    ApolloModule,
+    HttpLinkModule
+  ]
 })
-export class GraphQLModule {}
+export class GraphQLModule {
+
+  constructor(
+    apollo: Apollo,
+    httpLink: HttpLink
+  ) {
+    const linkError = onError(({ graphQLErrors, networkError }) => {
+      if (graphQLErrors) {
+        graphQLErrors.map(({ message, locations, path }) =>
+          console.log(
+            `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+          ),
+        );
+      }
+      if (networkError) {
+        console.log(`[Network error]: ${networkError}`);
+      }
+    });
+
+    const authMiddleware: ApolloLink = new ApolloLink((operation, forward) => {
+      operation.setContext({
+        headers: new HttpHeaders({
+          Authorization: `Bearer  ${this.getAuthToken()}`
+        })
+      });
+      return forward(operation);
+    });
+
+    const uri = environment.API_URL; // <-- add the URL of the GraphQL server here
+    const http = httpLink.create({ uri });
+
+    apollo.create({
+      link: ApolloLink.from([
+        linkError,
+        authMiddleware.concat(http)
+      ]),
+      cache: new InMemoryCache(),
+      connectToDevTools: !environment.production
+    });
+
+  }
+
+  private getAuthToken(): string {
+    return localStorage.getItem(StorageKeys.AUTH_TOKEN);
+  }
+
+}

@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   };
 
   private nameControl = new FormControl('', [ Validators.required, Validators.minLength(5)]);
-  private alive = true;
+  private componentAlive = true;
 
   constructor(
     public authService: AuthService,
@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     operation
     .pipe(
-      takeWhile(() => this.alive)
+      takeWhile(() => this.componentAlive)
     ).subscribe(
       res => {
         const redirect = this.authService.redirectUrl || '/dashboard';
@@ -89,7 +89,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.alive = false;
+    this.componentAlive = false;
   }
 
 }

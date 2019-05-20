@@ -16,7 +16,7 @@ export class AutoLoginGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> {
-    return of(true);
+    // return of(true);
     return this.authService.isAuthenticated
       .pipe(
         tap(isAuthenticated => (isAuthenticated) ? this.router.navigate(['/dashboard']) : null),

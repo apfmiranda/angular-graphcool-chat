@@ -131,7 +131,7 @@ export class AuthService {
     };
   }
 
-  loogout(): void {
+  logout(): void {
     localStorage.removeItem(StorageKeys.AUTH_TOKEN);
     localStorage.removeItem(StorageKeys.KEEP_SIGNED);
     this.keepSigned = false;

@@ -70,10 +70,16 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.authService.setRememberMe(this.loginForm.value);
         const redirect = this.authService.redirectUrl || '/dashboard';
 
+        // console.log('redirecting: ', redirect);
+        // this.router.navigate([redirect]);
+        // this.authService.redirectUrl = null;
+        // this.configs.isLoading = false;
+
         this.authService.isAuthenticated
         .pipe(takeWhile(() => this.componentAlive))
             .subscribe((is: boolean) => {
               if (is) {
+                console.log('redirecting: ', redirect);
                 this.router.navigate([redirect]);
                 this.authService.redirectUrl = null;
                 this.configs.isLoading = false;
@@ -81,7 +87,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         });
       },
       error => {
-        console.log(error);
+        console.log('Erro onSubmit(): ', error);
         this.configs.isLoading = false;
         this.snackBar.open(this.errorService.getErrorMessage(error), 'ok', {duration: 5000, verticalPosition: 'top'});
       }

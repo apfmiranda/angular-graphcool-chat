@@ -10,6 +10,7 @@ import {
   MatSnackBarModule,
   MatListModule,
   MatIconModule,
+  MatSidenavModule,
   MatSlideToggleModule,
   MatLineModule} from '@angular/material';
 
@@ -25,6 +26,7 @@ import {
     MatSnackBarModule,
     MatListModule,
     MatLineModule,
+    MatSidenavModule,
     MatIconModule,
     MatSlideToggleModule
   ]

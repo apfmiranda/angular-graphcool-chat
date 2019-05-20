@@ -5,6 +5,7 @@ import { DashboardHomeComponent } from './components/dashboard-home/dashboard-ho
 import { DashboardRoutingModule } from './dashboard-routing.module';
 
 import { SharedModule } from '../shared/shared.module';
+import { DashboardResourcesComponent } from './components/dashboard-resources/dashboard-resources.component';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { SharedModule } from '../shared/shared.module';
   ],
   declarations: [
     DashboardHomeComponent,
-    DashboardHeaderComponent
+    DashboardHeaderComponent,
+    DashboardResourcesComponent
   ]
 })
 export class DashboardModule { }

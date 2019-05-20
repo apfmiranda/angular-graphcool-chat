@@ -1,12 +1,14 @@
 import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { StorageKeys } from './storage-keys';
-import { NgModule } from '@angular/core';
-import { ApolloModule, APOLLO_OPTIONS, Apollo } from 'apollo-angular';
+import { NgModule, Inject } from '@angular/core';
+import { ApolloModule, Apollo } from 'apollo-angular';
 import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { environment } from './../environments/environment';
 import { onError } from 'apollo-link-error';
 import { ApolloLink } from 'apollo-link';
+
+import { GRAPHCOOL_CONFIG, GraphcoolConfig } from './core/providers/graphcool-config.provider';
 
 @NgModule({
   imports: [
@@ -19,6 +21,7 @@ export class GraphQLModule {
 
   constructor(
     apollo: Apollo,
+    @Inject(GRAPHCOOL_CONFIG) private graphcoolConfig: GraphcoolConfig,
     httpLink: HttpLink
   ) {
     const linkError = onError(({ graphQLErrors, networkError }) => {
@@ -43,7 +46,7 @@ export class GraphQLModule {
       return forward(operation);
     });
 
-    const uri = environment.API_URL; // <-- add the URL of the GraphQL server here
+    const uri = this.graphcoolConfig.simpleAPI; // <-- add the URL of the GraphQL server here
     const http = httpLink.create({ uri });
 
     apollo.create({

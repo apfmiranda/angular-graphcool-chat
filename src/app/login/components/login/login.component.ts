@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { ErrorService } from './../../../core/services/error.service';
 import { Observable } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
@@ -30,11 +31,18 @@ export class LoginComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     private errorService: ErrorService,
     private fb: FormBuilder,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.createForm();
+
+    const userData = this.authService.getRememberMe();
+    if (userData) {
+      this.email.setValue(userData.email);
+      this.password.setValue(userData.password);
+    }
   }
 
   createForm(): void {
@@ -59,17 +67,25 @@ export class LoginComponent implements OnInit, OnDestroy {
       takeWhile(() => this.componentAlive)
     ).subscribe(
       res => {
+        this.authService.setRememberMe(this.loginForm.value);
         const redirect = this.authService.redirectUrl || '/dashboard';
-        // route redirect
-        this.authService.redirectUrl = null;
-        this.configs.isLoading = false;
+
+        this.authService.isAuthenticated
+        .pipe(takeWhile(() => this.componentAlive))
+            .subscribe((is: boolean) => {
+              if (is) {
+                this.router.navigate([redirect]);
+                this.authService.redirectUrl = null;
+                this.configs.isLoading = false;
+              }
+        });
       },
       error => {
         console.log(error);
         this.configs.isLoading = false;
         this.snackBar.open(this.errorService.getErrorMessage(error), 'ok', {duration: 5000, verticalPosition: 'top'});
-      },
-      () => console.log('Observable completado!')
+      }
+      // () => console.log('Observable completado!')
     );
   }
 
@@ -86,6 +102,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   onKeepSigned(): void {
     this.authService.toggleKeepSigned();
+  }
+
+  onRememberMe(): void {
+    this.authService.toggleRememberMe();
   }
 
   ngOnDestroy(): void {

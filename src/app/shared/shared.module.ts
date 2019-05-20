@@ -8,7 +8,10 @@ import {
   MatButtonModule,
   MatProgressSpinnerModule,
   MatSnackBarModule,
-  MatSlideToggleModule } from '@angular/material';
+  MatListModule,
+  MatIconModule,
+  MatSlideToggleModule,
+  MatLineModule} from '@angular/material';
 
 @NgModule({
   exports: [
@@ -20,6 +23,9 @@ import {
     MatButtonModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatListModule,
+    MatLineModule,
+    MatIconModule,
     MatSlideToggleModule
   ]
 })

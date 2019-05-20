@@ -44,6 +44,12 @@
           (change)="onKeepSigned()"
           >Continuar logado</mat-slide-toggle>
 
+        <mat-slide-toggle
+          color="primary"
+          [checked]="authService.rememberMe"
+          (change)="onRememberMe()"
+          >Lembre de mim</mat-slide-toggle>
+
         <button
           type="submit"
           mat-stroked-button color="primary"

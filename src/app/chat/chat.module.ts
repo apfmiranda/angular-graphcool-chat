@@ -7,7 +7,10 @@ import { ChatUsersComponent } from './components/chat-users/chat-users.component
 import { ChatListComponent } from './components/chat-list/chat-list.component';
 
 @NgModule({
-  declarations: [ChatTabComponent, ChatUsersComponent, ChatListComponent],
+  declarations: [
+    ChatTabComponent,
+    ChatUsersComponent,
+    ChatListComponent],
   imports: [
     SharedModule,
     ChatRoutingModule

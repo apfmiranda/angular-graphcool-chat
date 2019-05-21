@@ -14,10 +14,18 @@ import {
   MatSlideToggleModule,
   MatTabsModule,
   MatLineModule} from '@angular/material';
+import { NoRecordComponent } from './components/no-record/no-record.component';
 
 @NgModule({
+  declarations: [
+    NoRecordComponent
+  ],
+  imports: [
+    MatIconModule
+  ],
   exports: [
     CommonModule,
+    NoRecordComponent,
     ReactiveFormsModule,
     MatCardModule,
     MatToolbarModule,

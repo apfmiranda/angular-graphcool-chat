@@ -12,6 +12,7 @@ import {
   MatIconModule,
   MatSidenavModule,
   MatSlideToggleModule,
+  MatTabsModule,
   MatLineModule} from '@angular/material';
 
 @NgModule({
@@ -28,6 +29,7 @@ import {
     MatLineModule,
     MatSidenavModule,
     MatIconModule,
+    MatTabsModule,
     MatSlideToggleModule
   ]
 })

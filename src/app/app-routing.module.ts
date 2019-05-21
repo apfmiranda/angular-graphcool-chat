@@ -6,8 +6,8 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: 'dashboard',
-    loadChildren:  () => DashboardModule,
-    canLoad: [ AuthGuard ]
+    loadChildren: './dashboard/dashboard.module#DashboardModule',
+    canActivate: [ AuthGuard ]
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];

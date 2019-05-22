@@ -12,6 +12,7 @@ import { Chat } from '../../models/chat.model';
 export class ChatListComponent implements OnInit {
 
   chats$: Observable<Chat[]>;
+  authUserId: string;
 
   constructor(
     private authService: AuthService,
@@ -19,7 +20,8 @@ export class ChatListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.chats$ = this.chatService.getUserChats(this.authService.authUser.id);
+    this.authUserId = this.authService.authUser.id;
+    this.chats$ = this.chatService.getUserChats(this.authUserId);
   }
 
   getChatTitle(chat: Chat): string {
@@ -29,14 +31,10 @@ export class ChatListComponent implements OnInit {
   getLastMessage(chat: Chat): string {
     const message = chat.messages[0];
     if (message) {
-      const sender =
-        (message.sender.id === this.authService.authUser.id)
-          ? 'You'
-          : message.sender.name;
-      return `${sender}: ${message.text}`;
+      const sender = (message.sender[0].id === this.authUserId) ? 'You:' : '';
+      return `${sender} ${message.text}`;
     }
-
-    return 'No message.';
+    return 'No messages.';
   }
 
 }

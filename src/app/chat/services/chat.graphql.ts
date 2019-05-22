@@ -41,4 +41,5 @@ query UserChatsQuery($userId: ID!){
       }
     }
   }
+}
 `;

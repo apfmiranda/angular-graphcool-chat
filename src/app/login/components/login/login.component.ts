@@ -62,24 +62,22 @@ export class LoginComponent implements OnInit, OnDestroy {
     operation
     .pipe(
       takeWhile(() => this.componentAlive)
-    ).subscribe(
-      res => {
+    ).subscribe(res => {
         this.authService.setRememberMe(this.loginForm.value);
         const redirect = this.authService.redirectUrl || '/dashboard';
 
         this.authService.isAuthenticated
-        .pipe(takeWhile(() => this.componentAlive))
-            .subscribe((is: boolean) => {
-              if (is) {
-                console.log('redirecting: ', redirect);
-                this.router.navigate([redirect]);
-                this.authService.redirectUrl = null;
-                this.configs.isLoading = false;
-              }
-        });
+          .pipe(takeWhile(() => this.componentAlive))
+          .subscribe((is: boolean) => {
+            if (is) {
+              console.log('redirecting: ', redirect);
+              this.router.navigate([redirect]);
+              this.authService.redirectUrl = null;
+              this.configs.isLoading = false;
+            }
+          });
       },
       error => {
-        console.log('Erro onSubmit(): ', error);
         this.configs.isLoading = false;
         this.snackBar.open(this.errorService.getErrorMessage(error), 'ok', {duration: 5000, verticalPosition: 'top'});
       }

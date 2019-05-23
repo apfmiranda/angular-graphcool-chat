@@ -1,11 +1,14 @@
-import { User } from 'src/app/core/models/user.model';
-import { UserService } from 'src/app/core/services/user.service';
+import { MessageService } from './../../services/message.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Chat } from '../../models/chat.model';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { map, mergeMap, tap, take } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
+
+import { Chat } from '../../models/chat.model';
+import { Message } from './../../models/message.model';
+import { UserService } from 'src/app/core/services/user.service';
+import { User } from 'src/app/core/models/user.model';
 
 @Component({
   selector: 'app-chat-window',
@@ -15,6 +18,7 @@ import { Title } from '@angular/platform-browser';
 export class ChatWindowComponent implements OnInit, OnDestroy {
 
   chat: Chat;
+  messages$: Observable<Message[]>;
   titleBefore: string;
   recipienteId: string = null;
   private subscriptions: Subscription[] = [];
@@ -22,11 +26,13 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private title: Title,
-    private userService: UserService
+    private userService: UserService,
+    private messageService: MessageService
   ) { }
 
   ngOnInit() {
     this.titleBefore = this.title.getTitle();
+    this.title.setTitle('Loading....');
     this.subscriptions.push(
       this.route.data
         .pipe(
@@ -41,6 +47,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
                 .subscribe((user: User) => this.title.setTitle(user.name));
             } else {
               this.title.setTitle(this.chat.title || this.chat.users[0].name);
+              this.messages$ = this.messageService.getChatMessages(this.chat.id);
             }
           })
         )

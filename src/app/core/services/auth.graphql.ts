@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export interface LoggedInUserQuery {
-  loggedInUser: {id: string};
+  loggedInUser: {id: string}
 }
 
 export const LOGGED_IN_USER_QUERY = gql`

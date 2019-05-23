@@ -56,8 +56,7 @@ export class AuthService {
       mutation: SIGNUP_USER_MUTATION,
       variables
     }).pipe(
-      tap((res) => console.log(res)),
-      map(res => res.data.signupUser),
+      map(res => res.data.authenticateUser),
       tap(res => this.setAuthState({ id: res && res.id, token: res && res.token, isAuthenticated: res != null })),
       catchError(err => {
         this.setAuthState({ id: null, token: null, isAuthenticated: false });

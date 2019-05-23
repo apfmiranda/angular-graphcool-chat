@@ -10,7 +10,7 @@ type User @model {
   updatedAt: DateTime!
   chats: [Chat!]! @relation(name: "UsersOnChats")
   messages: [Message!]! @relation(name: "MessagesOnUser")
-  photo: File @relation(name: "UsersPhoto")
+  photo: File @relation(name: "UserPhoto")
 }
 
 type Chat @model {
@@ -28,19 +28,17 @@ type Message @model {
   id: ID! @isUnique
   text: String!
   createdAt: DateTime!
-  sender: [User!]! @relation(name: "MessagesOnUser")
+  sender: User! @relation(name: "MessagesOnUser")
   chat: Chat! @relation(name: "MessagesOnChat")
 }
 
 type File @model {
   id: ID! @isUnique
-  secret: String! @isUnique
-  name: String!
-  size: Int!
-  url: String! @isUnique
-  contentType: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  user: User @relation(name: "UsersPhoto")
+  secret: String
+  name: String
+  size: Int
+  url: String
+  contentType: String
+  user: User @relation(name: "UserPhoto")
   chat: Chat @relation(name: "ChatPhoto")
 }

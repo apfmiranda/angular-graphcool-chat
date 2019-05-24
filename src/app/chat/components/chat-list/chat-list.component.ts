@@ -31,7 +31,7 @@ export class ChatListComponent implements OnInit {
   getLastMessage(chat: Chat): string {
     const message = chat.messages[0];
     if (message) {
-      const sender = (message.sender[0].id === this.authUserId) ? 'You:' : '';
+      const sender = (message.sender.id === this.authUserId) ? 'You:' : '';
       return `${sender} ${message.text}`;
     }
     return 'No messages.';

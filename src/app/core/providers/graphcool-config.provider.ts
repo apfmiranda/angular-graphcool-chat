@@ -2,7 +2,7 @@ import { InjectionToken } from '@angular/core';
 
 // import { graphcoolProjectInfo } from './../../../../graphcool/project-info/graphcool-project-info';
 
-const graphcoolId = 'agf-chat'; // graphcoolProjectInfo.id;
+const graphcoolId = 'cjw0xedjt2xgo0142rqlz541s'; // graphcoolProjectInfo.id;
 
 export interface GraphcoolConfig {
   simpleAPI: string;

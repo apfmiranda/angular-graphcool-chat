@@ -1,3 +1,4 @@
+import { AuthService } from './../../../core/services/auth.service';
 import { MessageService } from './../../services/message.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
@@ -19,6 +20,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
 
   chat: Chat;
   messages$: Observable<Message[]>;
+  newMessage = '';
   titleBefore: string;
   recipienteId: string = null;
   private subscriptions: Subscription[] = [];
@@ -27,6 +29,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private title: Title,
     private userService: UserService,
+    private authService: AuthService,
     private messageService: MessageService
   ) { }
 
@@ -53,6 +56,20 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
         )
         .subscribe()
     );
+  }
+
+  sendMessage(): void {
+    this.newMessage = this.newMessage.trim();
+    if (this.newMessage) {
+      this.messageService.createMessage(
+        {
+          text: this.newMessage,
+          chatId: this.chat.id,
+          senderId: this.authService.authUser.id
+        }).subscribe(console.log);
+
+      this.newMessage = '';
+    }
   }
 
   ngOnDestroy(): void {

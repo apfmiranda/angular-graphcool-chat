@@ -1,3 +1,4 @@
+import { ChatService } from './../../services/chat.service';
 import { AuthService } from './../../../core/services/auth.service';
 import { MessageService } from './../../services/message.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
@@ -30,7 +31,8 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
     private title: Title,
     private userService: UserService,
     private authService: AuthService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private chatService: ChatService
   ) { }
 
   ngOnInit() {
@@ -61,15 +63,35 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
   sendMessage(): void {
     this.newMessage = this.newMessage.trim();
     if (this.newMessage) {
-      this.messageService.createMessage(
-        {
-          text: this.newMessage,
-          chatId: this.chat.id,
-          senderId: this.authService.authUser.id
-        }).subscribe(console.log);
 
-      this.newMessage = '';
+      if (this.chat) {
+
+        this.messageService.createMessage(
+          {
+            text: this.newMessage,
+            chatId: this.chat.id,
+            senderId: this.authService.authUser.id
+          }).pipe(take(1)).subscribe(console.log);
+
+        this.newMessage = '';
+
+      } else {
+        this.createPrivateChat();
+      }
     }
+  }
+
+  private createPrivateChat(): void {
+    this.chatService.createPriveChat(
+      this.authService.authUser.id,
+      this.recipienteId
+    ).pipe(
+      take(1),
+      tap((chat: Chat) => {
+        this.chat = chat;
+        this.sendMessage();
+      })
+    ).subscribe();
   }
 
   ngOnDestroy(): void {

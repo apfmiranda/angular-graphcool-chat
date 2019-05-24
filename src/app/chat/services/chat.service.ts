@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 
-import { AllChatsQuery, USER_CHATS_QUERY, ChatQuery, CHAT_BY_ID_OR_BY_USERS_QUERY } from './chat.graphql';
+import { AllChatsQuery, USER_CHATS_QUERY, ChatQuery, CHAT_BY_ID_OR_BY_USERS_QUERY, CREATE_PRIVATE_CHAT_MUTATION } from './chat.graphql';
 import { Chat } from '../models/chat.model';
 
 @Injectable({
@@ -40,6 +40,16 @@ export class ChatService {
         (res.data as ChatQuery).Chat :
         (res.data as AllChatsQuery).allChats[0])
     );
+  }
+
+  createPriveChat(loggedUserId: string, targetUserId: string): Observable<Chat>  {
+    return this.apollo
+      .mutate({
+        mutation: CREATE_PRIVATE_CHAT_MUTATION,
+        variables: {loggedUserId, targetUserId}
+      }).pipe(
+        map(res => res.data.createChat)
+      );
   }
 
 }

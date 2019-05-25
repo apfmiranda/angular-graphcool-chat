@@ -3,11 +3,10 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-avatar',
   template: `
-    <div classs="avatar-container" [ngStyle]="containerStyles">
+    <div class="avatar-container" [ngStyle]="containerStyles">
       <img [src]="src" [title]="title || 'Avatar'" [ngStyle]="imageStyles" />
       <ng-content></ng-content>
     </div>
-
   `,
   styleUrls: ['./avatar.component.scss']
 })

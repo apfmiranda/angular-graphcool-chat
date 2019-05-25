@@ -3,7 +3,7 @@ import { AuthService } from './../../../core/services/auth.service';
 import { MessageService } from './../../services/message.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, of } from 'rxjs';
 import { map, mergeMap, tap, take } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
 
@@ -50,6 +50,9 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
               this.userService.getUserById(this.recipienteId)
                 .pipe(take(1))
                 .subscribe((user: User) => this.title.setTitle(user.name));
+
+              // evitar loading infinito quando não há chat com o usuario clicado
+              this.messages$ = of([]);
             } else {
               this.title.setTitle(this.chat.title || this.chat.users[0].name);
               this.messages$ = this.messageService.getChatMessages(this.chat.id);

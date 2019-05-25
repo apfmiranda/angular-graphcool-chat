@@ -15,15 +15,19 @@ import {
   MatTabsModule,
   MatLineModule} from '@angular/material';
 import { NoRecordComponent } from './components/no-record/no-record.component';
+import { AvatarComponent } from './components/avatar/avatar.component';
 
 @NgModule({
   declarations: [
+    AvatarComponent,
     NoRecordComponent
   ],
   imports: [
-    MatIconModule
+    MatIconModule,
+    CommonModule
   ],
   exports: [
+    AvatarComponent,
     CommonModule,
     NoRecordComponent,
     ReactiveFormsModule,

@@ -30,7 +30,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private title: Title,
     private userService: UserService,
-    private authService: AuthService,
+    public authService: AuthService,
     private messageService: MessageService,
     private chatService: ChatService
   ) { }

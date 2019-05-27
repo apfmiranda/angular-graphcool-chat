@@ -24,7 +24,7 @@ export class ChatListComponent extends BaseComponent<Chat> implements OnInit {
 
   ngOnInit() {
     this.authUserId = this.authService.authUser.id;
-    this.chats$ = this.chatService.getUserChats(this.authUserId);
+    this.chats$ = this.chatService.chats$;
   }
 
   getChatTitle(chat: Chat): string {

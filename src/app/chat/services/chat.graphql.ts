@@ -63,7 +63,6 @@ export const USER_CHATS_QUERY = gql`
   ${ChatMessagesFragment}
 `;
 
-
 export const CHAT_BY_ID_OR_BY_USERS_QUERY = gql`
   query chatByIdOrByUsersQuery ($chatId: ID!, $loggedUserId: ID!, $targetUserId: ID!){
     Chat(
@@ -85,7 +84,6 @@ export const CHAT_BY_ID_OR_BY_USERS_QUERY = gql`
   }
   ${ChatFragment}
 `;
-
 
 export const CREATE_PRIVATE_CHAT_MUTATION = gql`
   mutation CreatePriivateChatMutation($loggedUserId: ID!, $targetUserId: ID!) {

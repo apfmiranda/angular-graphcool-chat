@@ -8,6 +8,8 @@
   <div class="text-container" [ngClass]="{'sender-container': isFromSender}">
     <i class="arrow" [ngClass]="arrowClass"></i>
     <span class="text">{{ message.text }}</span>
-    <span class="time"><small>{{ message.sender.name }}: {{ message.createdAt | fromNow:'angular':true:123 }}</small></span>
+    <span class="time"><small>
+      {{ isFromSender ? 'you' : message.sender.name }}
+      : {{ message.createdAt | fromNow:'angular':true:123 }}</small></span>
   </div>
 </div>

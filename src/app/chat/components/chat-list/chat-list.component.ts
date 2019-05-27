@@ -1,3 +1,4 @@
+import { BaseComponent } from './../../../shared/components/base.component';
 import { AuthService } from './../../../core/services/auth.service';
 import { ChatService } from './../../services/chat.service';
 import { Observable } from 'rxjs';
@@ -9,7 +10,7 @@ import { Chat } from '../../models/chat.model';
   templateUrl: './chat-list.component.html',
   styleUrls: ['./chat-list.component.scss']
 })
-export class ChatListComponent implements OnInit {
+export class ChatListComponent extends BaseComponent<Chat> implements OnInit {
 
   chats$: Observable<Chat[]>;
   authUserId: string;
@@ -17,7 +18,9 @@ export class ChatListComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private chatService: ChatService
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.authUserId = this.authService.authUser.id;

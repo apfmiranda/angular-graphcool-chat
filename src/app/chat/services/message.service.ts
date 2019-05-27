@@ -51,19 +51,24 @@ export class MessageService {
         },
       },
       update: (store: DataProxy, {data: {createMessage}}) => {
-        // lendo query
-        const data = store.readQuery<AllMessageQuery>({
-          query: GET_CHAT_MESSAGES_QUERY,
-          variables: { chatId: message.chatId }
-        });
-        // alterando query, colocando um novo item na lista
-        data.allMessages = [...data.allMessages, createMessage];
-        // colocando a nova lista no cache
-        store.writeQuery({
-          query: GET_CHAT_MESSAGES_QUERY,
-          variables: { chatId: message.chatId },
-          data
-        });
+        try {
+          // lendo query
+          const data = store.readQuery<AllMessageQuery>({
+            query: GET_CHAT_MESSAGES_QUERY,
+            variables: { chatId: message.chatId }
+          });
+          // alterando query, colocando um novo item na lista
+          data.allMessages = [...data.allMessages, createMessage];
+          // colocando a nova lista no cache
+          store.writeQuery({
+            query: GET_CHAT_MESSAGES_QUERY,
+            variables: { chatId: message.chatId },
+            data
+          });
+        } catch (error) {
+          console.log('allMessageQuery not found');
+        }
+
       }
 
     }).pipe(

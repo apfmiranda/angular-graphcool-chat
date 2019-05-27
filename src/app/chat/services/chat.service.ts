@@ -1,3 +1,4 @@
+import { DataProxy } from 'apollo-cache';
 import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
@@ -60,7 +61,29 @@ export class ChatService {
     return this.apollo
       .mutate({
         mutation: CREATE_PRIVATE_CHAT_MUTATION,
-        variables: {loggedUserId, targetUserId}
+        variables: {loggedUserId, targetUserId},
+        update: (store: DataProxy, {data: {createChat}}) => {
+
+          const variables = {
+            chatId: targetUserId,
+            loggedUserId,
+            targetUserId
+          };
+
+          const data = store.readQuery<AllChatsQuery>({
+            query: CHAT_BY_ID_OR_BY_USERS_QUERY,
+            variables
+          });
+
+          data.allChats = [...data.allChats, createChat];
+
+          store.writeQuery<AllChatsQuery>({
+            query: CHAT_BY_ID_OR_BY_USERS_QUERY,
+            variables,
+            data
+          });
+
+        }
       }).pipe(
         map(res => res.data.createChat)
       );

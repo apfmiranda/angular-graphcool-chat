@@ -77,7 +77,7 @@ export class ChatWindowComponent extends BaseComponent<Message> implements OnIni
             text: this.newMessage,
             chatId: this.chat.id,
             senderId: this.authService.authUser.id
-          }).pipe(take(1)).subscribe(console.log);
+          }).pipe(take(1)).subscribe();
 
         this.newMessage = '';
 

@@ -4,6 +4,7 @@ import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { DataProxy } from 'apollo-cache';
 
 @Injectable({
   providedIn: 'root'
@@ -28,9 +29,26 @@ export class MessageService {
   createMessage(message: {text: string, chatId: string, senderId: string}): Observable<Message> {
     return this.apollo.mutate({
       mutation: CREATE_MESSAGE_MUTATION,
-      variables: message
+      variables: message,
+      update: (store: DataProxy, {data: {createMessage}}) => {
+        // lendo query
+        const data = store.readQuery<AllMessageQuery>({
+          query: GET_CHAT_MESSAGES_QUERY,
+          variables: { chatId: message.chatId }
+        });
+        // alterando query, colocando um novo item na lista
+        data.allMessages = [...data.allMessages, createMessage];
+        // colocando a nova lista no cache
+        store.writeQuery({
+          query: GET_CHAT_MESSAGES_QUERY,
+          variables: { chatId: message.chatId },
+          data
+        });
+      }
+
     }).pipe(
       map(res => res.data.createMessage)
     );
   }
 }
+

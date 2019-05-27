@@ -20,7 +20,7 @@ export class ChatService {
       .query<AllChatsQuery>({
         query: USER_CHATS_QUERY,
         variables: {
-          userId
+          loggedUserId: userId
         }
       }).pipe(
         map(res => res.data.allChats),

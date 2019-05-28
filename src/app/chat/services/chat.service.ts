@@ -1,13 +1,22 @@
+import { Message } from './../models/message.model';
+import { USER_MESSAGES_SUBSCRIPTION } from './message.graphql';
 import { AuthService } from './../../core/services/auth.service';
-import { DataProxy } from 'apollo-cache';
-import { Apollo } from 'apollo-angular';
-import { Observable, Subscription } from 'rxjs';
+import { Router, RouterEvent, NavigationEnd } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { DataProxy } from 'apollo-cache';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { AllChatsQuery, USER_CHATS_QUERY, ChatQuery, CHAT_BY_ID_OR_BY_USERS_QUERY, CREATE_PRIVATE_CHAT_MUTATION } from './chat.graphql';
+import {
+  AllChatsQuery,
+  USER_CHATS_QUERY,
+  ChatQuery,
+  CHAT_BY_ID_OR_BY_USERS_QUERY,
+  CREATE_PRIVATE_CHAT_MUTATION
+} from './chat.graphql';
+
 import { Chat } from '../models/chat.model';
-import { Router, RouterEvent, NavigationEnd } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +24,7 @@ import { Router, RouterEvent, NavigationEnd } from '@angular/router';
 export class ChatService {
 
   chats$: Observable<Chat[]>;
+  private queryRef: QueryRef<AllChatsQuery>;
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -34,29 +44,57 @@ export class ChatService {
   }
 
   getUserChats(userId: string): Observable<Chat[]> {
-    return this.apollo.watchQuery<AllChatsQuery>({
-        query: USER_CHATS_QUERY,
-        variables: {
-          loggedUserId: userId
+    this.queryRef = this.apollo.watchQuery<AllChatsQuery>({
+      query: USER_CHATS_QUERY,
+      variables: {
+        loggedUserId: this.authService.authUser.id
+      }
+    });
+
+    this.queryRef.subscribeToMore({
+      document: USER_MESSAGES_SUBSCRIPTION,
+      variables: { loggedUserId: this.authService.authUser.id },
+      updateQuery: (previous: AllChatsQuery, { subscriptionData }): AllChatsQuery => {
+
+        const newMessage: Message = (subscriptionData.data as any).Message.node;
+
+        const chatToUpdateIndex: number =
+        (previous.allChats)
+          ? previous.allChats.findIndex(chat => chat.id === newMessage.chat.id)
+          : -1;
+
+        if (chatToUpdateIndex > -1) {
+          const newAllChats = [...previous.allChats];
+          const chatToUpdate: Chat = Object.assign({}, newAllChats[chatToUpdateIndex]);
+          chatToUpdate.messages = [newMessage];
+          newAllChats[chatToUpdateIndex] = chatToUpdate;
+          return {
+            ...previous,
+            allChats: newAllChats
+          };
         }
-      }).valueChanges
-        .pipe(
-          map(res => res.data.allChats),
-          map((chats: Chat[]) => {
-            const chatsToSort = chats.slice();
-            return chatsToSort.sort((a, b) => {
-              const valueA = (a.messages.length > 0)
-                ? new Date(a.messages[0].createdAt).getTime()
-                : new Date(a.createdAt).getTime();
+        return previous;
+      }
+    });
 
-              const valueB = (b.messages.length > 0)
-                ? new Date(b.messages[0].createdAt).getTime()
-                : new Date(b.createdAt).getTime();
+    return this.queryRef.valueChanges
+      .pipe(
+        map(res => res.data.allChats),
+        map((chats: Chat[]) => {
+          const chatsToSort = chats.slice();
+          return chatsToSort.sort((a, b) => {
+            const valueA = (a.messages.length > 0)
+              ? new Date(a.messages[0].createdAt).getTime()
+              : new Date(a.createdAt).getTime();
 
-              return valueB - valueA;
-            });
-          })
-        );
+            const valueB = (b.messages.length > 0)
+              ? new Date(b.messages[0].createdAt).getTime()
+              : new Date(b.createdAt).getTime();
+
+            return valueB - valueA;
+          });
+        })
+      );
   }
 
   getChatByIdOrUsers(chatOrUserId: string, loggedUserId: string): Observable<Chat> {

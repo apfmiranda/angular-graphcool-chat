@@ -12,6 +12,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { getOperationAST } from 'graphql';
 
 import { GRAPHCOOL_CONFIG, GraphcoolConfig } from './core/providers/graphcool-config.provider';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 @NgModule({
   imports: [
@@ -22,11 +23,15 @@ import { GRAPHCOOL_CONFIG, GraphcoolConfig } from './core/providers/graphcool-co
 })
 export class GraphQLModule {
 
+  private subscriptionClient: SubscriptionClient;
+
   constructor(
     apollo: Apollo,
     @Inject(GRAPHCOOL_CONFIG) private graphcoolConfig: GraphcoolConfig,
     httpLink: HttpLink
   ) {
+
+    // ##################### configuração de Captura de Erro ###############################
     const linkError = onError(({ graphQLErrors, networkError }) => {
       if (graphQLErrors) {
         graphQLErrors.map(({ message, locations, path }) =>
@@ -40,6 +45,7 @@ export class GraphQLModule {
       }
     });
 
+    // ##################### configuração do cabeçalho de autenticação ########################
     const authMiddleware: ApolloLink = new ApolloLink((operation, forward) => {
       operation.setContext({
         headers: new HttpHeaders({
@@ -49,23 +55,28 @@ export class GraphQLModule {
       return forward(operation);
     });
 
-    const uri = this.graphcoolConfig.simpleAPI; // <-- add the URL of the GraphQL server here
-    const http = httpLink.create({ uri });
-
+    // ##################### configuração do WebSocket ###############################
     const ws = new WebSocketLink({
       uri: this.graphcoolConfig.subscriptionsAPI,
       options: {
         reconnect: true,
-        timeout: 30000
+        timeout: 30000,
+        connectionParams: () => ({ 'Authorization': `Bearer ${this.getAuthToken()}` })
       }
     });
+    this.subscriptionClient = (ws as any).subscriptionClient;
 
+
+    // ##################### configuração do cache ###############################
     const cache = new InMemoryCache();
     persistCache({
       cache,
-
       storage: window.localStorage,
     }).catch(err => console.log('Erro ao persistir o cache', err));
+
+
+    const uri = this.graphcoolConfig.simpleAPI; // <-- add the URL of the GraphQL server here
+    const http = httpLink.create({ uri });
 
     apollo.create({
       link: ApolloLink.from([
@@ -73,7 +84,7 @@ export class GraphQLModule {
         ApolloLink.split(
           (operation: Operation) => {
             const operationAST = getOperationAST(operation.query, operation.operationName);
-            return !!operationAST  && operationAST.Operation === 'subscription';
+            return !!operationAST && operationAST.operation === 'subscription';
           },
           ws,
           authMiddleware.concat(http)
@@ -83,6 +94,9 @@ export class GraphQLModule {
       connectToDevTools: !environment.production
     });
 
+  }
+  closeSocketConnect(): void {
+    this.subscriptionClient.close(true, true);
   }
 
   private getAuthToken(): string {

@@ -123,7 +123,9 @@ export class ChatWindowComponent extends BaseComponent<Message> implements OnIni
 
   private scrollToBotton(behavior: string = 'auto', block: string = 'end'): void {
     setTimeout(() => {
-      this.content.nativeElement.scrollIntoView({behavior, block});
+      if (this.content) {
+        this.content.nativeElement.scrollIntoView({behavior, block});
+      }
     }, 0);
 
   }

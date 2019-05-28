@@ -6,7 +6,10 @@ import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { environment } from './../environments/environment';
 import { onError } from 'apollo-link-error';
-import { ApolloLink } from 'apollo-link';
+import { ApolloLink, Operation } from 'apollo-link';
+import { persistCache } from 'apollo-cache-persist';
+import { WebSocketLink } from 'apollo-link-ws';
+import { getOperationAST } from 'graphql';
 
 import { GRAPHCOOL_CONFIG, GraphcoolConfig } from './core/providers/graphcool-config.provider';
 
@@ -49,12 +52,34 @@ export class GraphQLModule {
     const uri = this.graphcoolConfig.simpleAPI; // <-- add the URL of the GraphQL server here
     const http = httpLink.create({ uri });
 
+    const ws = new WebSocketLink({
+      uri: this.graphcoolConfig.subscriptionsAPI,
+      options: {
+        reconnect: true,
+        timeout: 30000
+      }
+    });
+
+    const cache = new InMemoryCache();
+    persistCache({
+      cache,
+
+      storage: window.localStorage,
+    }).catch(err => console.log('Erro ao persistir o cache', err));
+
     apollo.create({
       link: ApolloLink.from([
         linkError,
-        authMiddleware.concat(http)
+        ApolloLink.split(
+          (operation: Operation) => {
+            const operationAST = getOperationAST(operation.query, operation.operationName);
+            return !!operationAST  && operationAST.Operation === 'subscription';
+          },
+          ws,
+          authMiddleware.concat(http)
+        )
       ]),
-      cache: new InMemoryCache(),
+      cache,
       connectToDevTools: !environment.production
     });
 

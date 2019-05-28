@@ -1,8 +1,9 @@
+import { ChatMessageComponent } from './../chat-message/chat-message.component';
 import { BaseComponent } from './../../../shared/components/base.component';
 import { ChatService } from './../../services/chat.service';
 import { AuthService } from './../../../core/services/auth.service';
 import { MessageService } from './../../services/message.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Subscription, Observable, of } from 'rxjs';
 import { map, mergeMap, tap, take } from 'rxjs/operators';
@@ -18,7 +19,7 @@ import { User } from 'src/app/core/models/user.model';
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.scss']
 })
-export class ChatWindowComponent extends BaseComponent<Message> implements OnInit, OnDestroy {
+export class ChatWindowComponent extends BaseComponent<Message> implements OnInit, OnDestroy, AfterViewInit {
 
   chat: Chat;
   messages$: Observable<Message[]>;
@@ -26,6 +27,8 @@ export class ChatWindowComponent extends BaseComponent<Message> implements OnIni
   titleBefore: string;
   recipienteId: string = null;
   alreadyLoadedMessages = false;
+  @ViewChild('content') private content: ElementRef;
+  @ViewChildren(ChatMessageComponent) private messagesQueryList: QueryList<ChatMessageComponent>
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -37,6 +40,14 @@ export class ChatWindowComponent extends BaseComponent<Message> implements OnIni
     private chatService: ChatService
   ) {
     super();
+  }
+
+  ngAfterViewInit(): void {
+    this.subscriptions.push(
+      this.messagesQueryList.changes.subscribe(() => {
+        this.scrollToBotton('smooth');
+      })
+    );
   }
 
   ngOnInit() {
@@ -108,6 +119,13 @@ export class ChatWindowComponent extends BaseComponent<Message> implements OnIni
         this.sendMessage();
       })
     ).subscribe();
+  }
+
+  private scrollToBotton(behavior: string = 'auto', block: string = 'end'): void {
+    setTimeout(() => {
+      this.content.nativeElement.scrollIntoView({behavior, block});
+    }, 0);
+
   }
 
   ngOnDestroy(): void {

@@ -92,6 +92,12 @@ export class MessageService {
 
           userChatsData.allChats = newUserChatsList;
 
+          store.writeQuery<AllChatsQuery>({
+            query: USER_CHATS_QUERY,
+            variables: userChatVariables,
+            data: userChatsData
+          });
+
         } catch (error) {
           console.log('allChatsQuery not found');
         }

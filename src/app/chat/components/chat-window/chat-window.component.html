@@ -3,7 +3,7 @@
 <ng-container *ngIf="messages$ | async as messages; else loadingMessages" >
   <ng-container *ngIf="messages.length > 0; else noMessages" >
 
-    <section class="content">
+    <section class="content" #content>
       <app-chat-message
         *ngFor="let m of messages; trackBy: trackByFn"
         [message]="m"

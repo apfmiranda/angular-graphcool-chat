@@ -1,7 +1,7 @@
 import { AuthService } from './../../core/services/auth.service';
 import { AllChatsQuery, USER_CHATS_QUERY } from './chat.graphql';
 import { Message } from './../models/message.model';
-import { GET_CHAT_MESSAGES_QUERY, AllMessageQuery, CREATE_MESSAGE_MUTATION } from './message.graphql';
+import { GET_CHAT_MESSAGES_QUERY, AllMessagesQuery, CREATE_MESSAGE_MUTATION } from './message.graphql';
 import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
@@ -20,7 +20,7 @@ export class MessageService {
 
   getChatMessages(chatId: string): Observable<Message[]> {
     return this.apollo
-      .watchQuery<AllMessageQuery>({
+      .watchQuery<AllMessagesQuery>({
         query: GET_CHAT_MESSAGES_QUERY,
         variables: { chatId }
       }).valueChanges
@@ -43,7 +43,7 @@ export class MessageService {
           sender: {
             __typename: 'User',
             id: message.senderId,
-            name: '',
+            name: 'you',
             email: '',
             createdAt: ''
           },
@@ -56,7 +56,7 @@ export class MessageService {
       update: (store: DataProxy, {data: {createMessage}}) => {
         try {
           // lendo query
-          const data = store.readQuery<AllMessageQuery>({
+          const data = store.readQuery<AllMessagesQuery>({
             query: GET_CHAT_MESSAGES_QUERY,
             variables: { chatId: message.chatId }
           });

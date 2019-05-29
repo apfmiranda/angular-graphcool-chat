@@ -1,7 +1,7 @@
 import { Message } from './../models/message.model';
 import gql from 'graphql-tag';
 
-export interface AllMessageQuery {
+export interface AllMessagesQuery {
   allMessages: Message[];
 }
 

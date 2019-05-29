@@ -56,16 +56,16 @@ export class GraphQLModule {
     });
 
     // ##################### configuração do WebSocket ###############################
-    const ws = new WebSocketLink({
-      uri: this.graphcoolConfig.subscriptionsAPI,
-      options: {
+    const client = new SubscriptionClient(this.graphcoolConfig.subscriptionsAPI,
+      {
         reconnect: true,
         timeout: 30000,
-        connectionParams: () => ({ 'Authorization': `Bearer ${this.getAuthToken()}` })
-      }
-    });
-    this.subscriptionClient = (ws as any).subscriptionClient;
-
+        lazy: false,
+        connectionParams: () => ({ Authorization: `Bearer ${this.getAuthToken()}` })
+      });
+    const ws = new WebSocketLink(client);
+    this.subscriptionClient = client;
+    this.logSubscriptionClient(client, true);
 
     // ##################### configuração do cache ###############################
     const cache = new InMemoryCache();
@@ -95,6 +95,7 @@ export class GraphQLModule {
     });
 
   }
+
   closeSocketConnect(): void {
     this.subscriptionClient.close(true, true);
   }
@@ -103,4 +104,27 @@ export class GraphQLModule {
     return localStorage.getItem(StorageKeys.AUTH_TOKEN);
   }
 
+  private logSubscriptionClient(client: SubscriptionClient, islog: boolean = false) {
+
+    if (islog) {
+      client.on('connecting', () => {
+        console.log('connecting');
+      });
+      client.on('connected', () => {
+        console.log('connected');
+      });
+      client.on('reconnecting', () => {
+        console.log('reconnecting');
+      });
+      client.on('reconnected', () => {
+        console.log('reconnected');
+      });
+      client.on('disconnected', () => {
+        console.log('disconnected');
+      });
+    }
+
+  }
+
 }
+

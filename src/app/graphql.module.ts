@@ -7,7 +7,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { environment } from './../environments/environment';
 import { onError } from 'apollo-link-error';
 import { ApolloLink, Operation } from 'apollo-link';
-import { persistCache } from 'apollo-cache-persist';
+import { CachePersistor } from 'apollo-cache-persist';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getOperationAST } from 'graphql';
 
@@ -22,7 +22,7 @@ import { SubscriptionClient } from 'subscriptions-transport-ws';
   ]
 })
 export class GraphQLModule {
-
+  cachePersistor: CachePersistor<any>;
   private subscriptionClient: SubscriptionClient;
 
   constructor(
@@ -69,11 +69,11 @@ export class GraphQLModule {
 
     // ##################### configuração do cache ###############################
     const cache = new InMemoryCache();
-    persistCache({
-      cache,
-      storage: window.localStorage,
-    }).catch(err => console.log('Erro ao persistir o cache', err));
 
+    this.cachePersistor = new CachePersistor({
+      cache,
+      storage: window.localStorage
+    });
 
     const uri = this.graphcoolConfig.simpleAPI; // <-- add the URL of the GraphQL server here
     const http = httpLink.create({ uri });

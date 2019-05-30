@@ -65,7 +65,7 @@ export class GraphQLModule {
       });
     const ws = new WebSocketLink(client);
     this.subscriptionClient = client;
-    this.logSubscriptionClient(client, true);
+    this.logSubscriptionClient(client, false);
 
     // ##################### configuração do cache ###############################
     const cache = new InMemoryCache();

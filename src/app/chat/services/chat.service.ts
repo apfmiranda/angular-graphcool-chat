@@ -4,7 +4,7 @@ import { Router, RouterEvent, NavigationEnd } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { DataProxy } from 'apollo-cache';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {
@@ -16,7 +16,8 @@ import {
   USER_CHATS_QUERY,
   ChatQuery,
   CHAT_BY_ID_OR_BY_USERS_QUERY,
-  CREATE_PRIVATE_CHAT_MUTATION } from './chat.graphql';
+  CREATE_PRIVATE_CHAT_MUTATION,
+  USER_CHATS_SUBSCRIPTION} from './chat.graphql';
 
 import { Chat } from '../models/chat.model';
 
@@ -52,6 +53,24 @@ export class ChatService {
       query: USER_CHATS_QUERY,
       variables: {
         loggedUserId: userId
+      }
+    });
+
+    this.queryRef.subscribeToMore({
+      document: USER_CHATS_SUBSCRIPTION,
+      variables: { loggedUserId: userId },
+      updateQuery: (previous: AllChatsQuery, { subscriptionData }): AllChatsQuery => {
+
+        const newChat: Chat = (subscriptionData.data as any).Chat.node;
+
+        if (previous.allChats.every(chat => chat.id !== newChat.id)) {
+          return {
+            ...previous,
+            allChats: [newChat, ...previous.allChats]
+          };
+        }
+
+        return previous;
       }
     });
 
@@ -185,6 +204,7 @@ export class ChatService {
   private onDestroy(): void {
     this.subscriptions.forEach(s => s.unsubscribe());
     this.subscriptions = [];
+    this.chats$ = null;
   }
 
 }

@@ -28,7 +28,7 @@ export class ChatWindowComponent extends BaseComponent<Message> implements OnIni
   recipienteId: string = null;
   alreadyLoadedMessages = false;
   @ViewChild('content') private content: ElementRef;
-  @ViewChildren(ChatMessageComponent) private messagesQueryList: QueryList<ChatMessageComponent>
+  @ViewChildren(ChatMessageComponent) private messagesQueryList: QueryList<ChatMessageComponent>;
   private subscriptions: Subscription[] = [];
 
   constructor(

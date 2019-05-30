@@ -2,11 +2,12 @@ import {
   Router,
   RouterEvent,
   NavigationEnd,
-  RoutesRecognized
+  RoutesRecognized,
+  Event
 } from '@angular/router';
 
-import { NgModule } from '@angular/core';
-import { filter } from 'rxjs/operators';
+import { NgModule, OnDestroy } from '@angular/core';
+import { filter, tap } from 'rxjs/operators';
 
 import { AuthService } from './../core/services/auth.service';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
@@ -18,6 +19,7 @@ import { ChatUsersComponent } from './components/chat-users/chat-users.component
 import { ChatWindowComponent } from './components/chat-window/chat-window.component';
 import { UserService } from '../core/services/user.service';
 import { SharedModule } from './../shared/shared.module';
+import { Subscription, Observable } from 'rxjs';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,11 @@ import { SharedModule } from './../shared/shared.module';
     ChatRoutingModule
   ]
 })
-export class ChatModule {
+export class ChatModule implements OnDestroy {
+
+  private subscriptionMonitoring: Subscription;
+  event$: Observable<Event>;
+  private isMonitoring = false;
 
   constructor(
     private router: Router,
@@ -40,29 +46,41 @@ export class ChatModule {
     private chatService: ChatService,
     private userService: UserService
   ) {
-    this.startMonitoringChatRoute();
-  }
 
-  private startMonitoringChatRoute() {
-
-    this.router.events
+    this.event$ = this.router.events
     .pipe(
-      filter(e => e instanceof RouterEvent)
-    ).subscribe((event: RouterEvent) => {
+      filter(e => e instanceof RouterEvent),
+      tap(e => {
+        if (e instanceof RoutesRecognized && e.url.includes('chat')) {
+          this.startMonitoring();
+        }
+        if (e instanceof NavigationEnd && !e.url.includes('chat')) {
+          this.stopMonitoring();
+        }
+      })
+    );
 
-      if (event instanceof RoutesRecognized && event.url.includes('chat')) {
-        this.chatService.startChatsMonitoring();
-        this.userService.startUsersMonitoring(this.authService.authUser.id);
-      }
-
-      if (event instanceof NavigationEnd && !event.url.includes('chat')) {
-        this.chatService.stopChatsMonitoring();
-        this.userService.stopUsersMonitoring();
-      }
-    });
+    this.subscriptionMonitoring = this.event$.subscribe();
 
   }
 
- }
+  private startMonitoring(): void {
+    if (!this.isMonitoring) {
+      this.chatService.startChatsMonitoring();
+      this.userService.startUsersMonitoring(this.authService.authUser.id);
+      this.isMonitoring = true;
+    }
+  }
 
+  private stopMonitoring(): void {
+    this.chatService.stopChatsMonitoring();
+    this.userService.stopUsersMonitoring();
+    this.isMonitoring = false;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptionMonitoring.unsubscribe();
+  }
+
+}
 

@@ -54,7 +54,8 @@ export class ChatService {
       query: USER_CHATS_QUERY,
       variables: {
         loggedUserId: userId
-      }
+      },
+      fetchPolicy: 'network-only'
     });
 
     this.queryRef.subscribeToMore({

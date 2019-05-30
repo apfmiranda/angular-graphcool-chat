@@ -86,7 +86,6 @@ export class AuthService {
           return throwError(error);
         })
       );
-
   }
 
   private validateToken(): Observable<{id: string, isAuthenticated: boolean}> {
@@ -100,7 +99,8 @@ export class AuthService {
           id: user && user.id,
           isAuthenticated: user != null
         };
-      })
+      }),
+      mergeMap(authData => (authData.isAuthenticated) ? of(authData) : throwError('Token Inválido'))
     );
   }
 

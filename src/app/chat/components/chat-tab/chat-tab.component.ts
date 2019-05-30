@@ -1,12 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { ChatService } from '../../services/chat.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-chat-tab',
   template: `
   <nav mat-tab-nav-bar backgroundColor="primary">
     <a mat-tab-link
-      routerLink="./"
+      [routerLink]="['/dashboard/chat']"
       routerLinkActive #chatsRla="routerLinkActive"
       [active]="chatsRla.isActive"
       [routerLinkActiveOptions]="{exact: true}">
@@ -14,7 +13,7 @@ import { ChatService } from '../../services/chat.service';
     </a>
 
     <a mat-tab-link
-      routerLink="users"
+    [routerLink]="['/dashboard/chat/users']"
       routerLinkActive #usersRla="routerLinkActive"
       [active]="usersRla.isActive">
       Users
@@ -23,17 +22,4 @@ import { ChatService } from '../../services/chat.service';
   <router-outlet></router-outlet>
   `
 })
-export class ChatTabComponent implements OnInit {
-
-  constructor(
-    private chatService: ChatService
-  ) {
-
-  }
-
-  ngOnInit(): void {
-    this.chatService.startChatsMonitoring();
-  }
-
-
-}
+export class ChatTabComponent {}

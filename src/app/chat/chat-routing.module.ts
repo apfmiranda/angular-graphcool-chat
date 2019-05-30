@@ -31,4 +31,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [ChatWindowResolver]
 })
-export class ChatRoutingModule { }
+export class ChatRoutingModule {}

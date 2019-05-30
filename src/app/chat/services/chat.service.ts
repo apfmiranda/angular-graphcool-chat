@@ -1,10 +1,9 @@
 import { Message } from './../models/message.model';
 import { AuthService } from './../../core/services/auth.service';
-import { Router, RouterEvent, NavigationEnd } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { DataProxy } from 'apollo-cache';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Observable, Subscription, of } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {
@@ -31,7 +30,6 @@ export class ChatService {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private router: Router,
     private apollo: Apollo,
     private authService: AuthService
   ) { }
@@ -40,11 +38,14 @@ export class ChatService {
     if (!this.chats$) {
       this.chats$ = this.getUserChats(this.authService.authUser.id);
       this.subscriptions.push(this.chats$.subscribe());
-      this.router.events.subscribe((event: RouterEvent) => {
-        if (event instanceof NavigationEnd && !this.router.url.includes('chat')) {
-          this.onDestroy();
-        }
-      });
+    }
+  }
+
+  stopChatsMonitoring(): void {
+    if (this.subscriptions.length > 0) {
+      this.subscriptions.forEach(s => s.unsubscribe());
+      this.subscriptions = [];
+      this.chats$ = null;
     }
   }
 

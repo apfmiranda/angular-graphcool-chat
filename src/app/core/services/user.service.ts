@@ -1,5 +1,5 @@
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
@@ -10,18 +10,36 @@ import { ALL_USERS_QUERY, AllUsersQuery, UserQuery, GET_USER_BY_ID_QUERY, NEW_US
 })
 export class UserService {
 
+  users$: Observable<User[]>;
   private queryRef: QueryRef<AllUsersQuery>;
+  private userSubscription: Subscription;
 
   constructor(
     private apollo: Apollo
   ) { }
+
+  startUsersMonitoring(idUserToExclude: string): void {
+    if (!this.users$) {
+      this.users$ = this.allUsers(idUserToExclude);
+      this.userSubscription = this.users$.subscribe();
+    }
+  }
+
+  stopUsersMonitoring() {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+      this.userSubscription = null;
+      this.users$ = null;
+    }
+  }
 
   allUsers(idToExclude: string): Observable<User[]> {
 
     this.queryRef =  this.apollo
       .watchQuery<AllUsersQuery>({
         query: ALL_USERS_QUERY,
-        variables: { idToExclude }
+        variables: { idToExclude },
+        fetchPolicy: 'network-only'
       });
 
     this.queryRef.subscribeToMore({

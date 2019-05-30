@@ -26,7 +26,7 @@ export class AuthService {
     private graphQLModule: GraphQLModule,
     private router: Router
   ) {
-    this.isAuthenticated.subscribe(is => console.log('AuthState: ', is));
+    this.isAuthenticated.subscribe();
     this.init();
   }
 

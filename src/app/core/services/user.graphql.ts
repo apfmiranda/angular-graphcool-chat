@@ -42,3 +42,19 @@ export const GET_USER_BY_ID_QUERY = gql `
   }
   ${UserFragment}
 `;
+
+export const NEW_USERS_SUBSCRIPTON = gql`
+  subscription NewUserSubscription {
+    User(
+      filter: {
+        mutation_in: [CREATED]
+      }
+    ) {
+      mutation
+      node{
+        ...UserFragment
+      }
+    }
+  }
+  ${UserFragment}
+`;

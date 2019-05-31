@@ -1,9 +1,11 @@
+import { ChatAddGroupComponent } from './../../component/chat-add-group/chat-add-group.component';
 import { BaseComponent } from './../../../shared/components/base.component';
 import { AuthService } from './../../../core/services/auth.service';
 import { ChatService } from './../../services/chat.service';
 import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { Chat } from '../../models/chat.model';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-chat-list',
@@ -17,7 +19,8 @@ export class ChatListComponent extends BaseComponent<Chat> implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private dialog: MatDialog
   ) {
     super();
   }
@@ -39,5 +42,17 @@ export class ChatListComponent extends BaseComponent<Chat> implements OnInit {
     }
     return 'No messages.';
   }
+
+  onAddGroup(): void {
+    const dialogRef = this.dialog.open(ChatAddGroupComponent, {
+      height: '80vh',
+      width: '400px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed: ', result);
+    });
+  }
+
 
 }

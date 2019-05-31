@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   MatCardModule,
+  MatDialogModule,
   MatToolbarModule,
   MatInputModule,
   MatButtonModule,
@@ -36,6 +37,7 @@ import { FromNowPipe } from './pipes/from-now.pipe';
     NoRecordComponent,
     ReactiveFormsModule,
     FormsModule,
+    MatDialogModule,
     MatCardModule,
     MatToolbarModule,
     MatInputModule,

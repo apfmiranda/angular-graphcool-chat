@@ -34,6 +34,9 @@ import { ChatAddGroupComponent } from './component/chat-add-group/chat-add-group
   imports: [
     SharedModule,
     ChatRoutingModule
+  ],
+  entryComponents : [
+    ChatAddGroupComponent
   ]
 })
 export class ChatModule implements OnDestroy {

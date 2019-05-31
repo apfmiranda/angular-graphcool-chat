@@ -32,3 +32,13 @@
   </app-no-record>
 </ng-template>
 
+<button class="fab-bottom-rigth" mat-fab [matMenuTriggerFor]="chatListOptions">
+  <mat-icon >add</mat-icon>
+</button>
+<mat-menu #chatListOptions="matMenu">
+  <button mat-menu-item>
+    <mat-icon>group_add</mat-icon>
+    Novo grupo
+  </button>
+</mat-menu>
+

@@ -13,6 +13,7 @@ import {
   MatSidenavModule,
   MatSlideToggleModule,
   MatTabsModule,
+  MatMenuModule,
   MatLineModule} from '@angular/material';
 import { NoRecordComponent } from './components/no-record/no-record.component';
 import { AvatarComponent } from './components/avatar/avatar.component';
@@ -46,6 +47,7 @@ import { FromNowPipe } from './pipes/from-now.pipe';
     MatSidenavModule,
     MatIconModule,
     MatTabsModule,
+    MatMenuModule,
     MatSlideToggleModule
   ]
 })

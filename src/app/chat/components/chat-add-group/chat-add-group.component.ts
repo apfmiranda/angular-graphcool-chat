@@ -1,4 +1,4 @@
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 
@@ -22,11 +22,13 @@ export class ChatAddGroupComponent implements OnInit{
 
   createFrom(): void {
     this.newGroupForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3)]]
+      title: ['', [Validators.required, Validators.minLength(3)]],
+      members: this.fb.array([], Validators.required)
     });
   }
 
   get title(): FormControl { return this.newGroupForm.get('title') as FormControl; }
+  get members(): FormArray { return this.newGroupForm.get('members') as FormArray; }
 
   onSubmit(): void {
     console.log('Form Value: ', this.newGroupForm.value);

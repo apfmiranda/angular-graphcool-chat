@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 
 @Component({
@@ -6,14 +7,29 @@ import { MatDialogRef } from '@angular/material';
   templateUrl: './chat-add-group.component.html',
   styleUrls: ['./chat-add-group.component.scss']
 })
-export class ChatAddGroupComponent {
+export class ChatAddGroupComponent implements OnInit{
+
+  newGroupForm: FormGroup;
 
   constructor(
+    private fb: FormBuilder,
     public dialogRef: MatDialogRef<ChatAddGroupComponent>
   ) {}
 
-  onNoClick(): void {
-    this.dialogRef.close();
+  ngOnInit(): void {
+    this.createFrom();
+  }
+
+  createFrom(): void {
+    this.newGroupForm = this.fb.group({
+      title: ['', [Validators.required, Validators.minLength(3)]]
+    });
+  }
+
+  get title(): FormControl { return this.newGroupForm.get('title') as FormControl; }
+
+  onSubmit(): void {
+    console.log('Form Value: ', this.newGroupForm.value);
   }
 
 }

@@ -1,4 +1,4 @@
-import { ChatAddGroupComponent } from './../../component/chat-add-group/chat-add-group.component';
+import { ChatAddGroupComponent } from './../../components/chat-add-group/chat-add-group.component';
 import { BaseComponent } from './../../../shared/components/base.component';
 import { AuthService } from './../../../core/services/auth.service';
 import { ChatService } from './../../services/chat.service';

@@ -20,7 +20,7 @@ import { ChatWindowComponent } from './components/chat-window/chat-window.compon
 import { UserService } from '../core/services/user.service';
 import { SharedModule } from './../shared/shared.module';
 import { Subscription, Observable } from 'rxjs';
-import { ChatAddGroupComponent } from './component/chat-add-group/chat-add-group.component';
+import { ChatAddGroupComponent } from './components/chat-add-group/chat-add-group.component';
 
 @NgModule({
   declarations: [

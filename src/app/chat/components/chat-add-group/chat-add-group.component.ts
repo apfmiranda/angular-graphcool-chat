@@ -1,3 +1,6 @@
+import { UserService } from 'src/app/core/services/user.service';
+import { User } from './../../../core/models/user.model';
+import { Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
@@ -10,13 +13,16 @@ import { MatDialogRef } from '@angular/material';
 export class ChatAddGroupComponent implements OnInit{
 
   newGroupForm: FormGroup;
+  users$: Observable<User[]>;
 
   constructor(
     private fb: FormBuilder,
+    private userService: UserService,
     public dialogRef: MatDialogRef<ChatAddGroupComponent>
   ) {}
 
   ngOnInit(): void {
+    this.users$ = this.userService.users$;
     this.createFrom();
   }
 

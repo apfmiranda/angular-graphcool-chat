@@ -1,8 +1,9 @@
+import { map } from 'rxjs/operators';
 import { UserService } from 'src/app/core/services/user.service';
 import { User } from './../../../core/models/user.model';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 
 @Component({
@@ -10,10 +11,11 @@ import { MatDialogRef } from '@angular/material';
   templateUrl: './chat-add-group.component.html',
   styleUrls: ['./chat-add-group.component.scss']
 })
-export class ChatAddGroupComponent implements OnInit{
+export class ChatAddGroupComponent implements OnInit, OnDestroy{
 
   newGroupForm: FormGroup;
   users$: Observable<User[]>;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -24,6 +26,19 @@ export class ChatAddGroupComponent implements OnInit{
   ngOnInit(): void {
     this.users$ = this.userService.users$;
     this.createFrom();
+    this.listenMembersList();
+  }
+
+  private listenMembersList(): void {
+
+    this.subscriptions.push(this.members.valueChanges
+      .subscribe(() => {
+        this.users$ = this.users$
+          .pipe(
+            map(users => users.filter(user => this.members.controls.every(member => member.value.id !== user.id)))
+          );
+      }));
+
   }
 
   createFrom(): void {
@@ -47,5 +62,10 @@ export class ChatAddGroupComponent implements OnInit{
   onSubmit(): void {
     console.log('Form Value: ', this.newGroupForm.value);
   }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
+  }
+
 
 }

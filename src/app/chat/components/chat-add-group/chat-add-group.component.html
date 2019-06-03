@@ -10,9 +10,9 @@
 
     <mat-nav-list formArrayName="members" *ngIf="members.controls.length > 0 " >
       <h3 matSubheader>Selecionados</h3>
-      <mat-list-item *ngFor="let member of members.controls;">
+      <mat-list-item *ngFor="let member of members.controls; let i=index">
         <h3 matLine>{{ member.value.name }}</h3>
-        <button mat-icon-button>
+        <button mat-icon-button (click)="removeMember(i)" >
           <mat-icon >close</mat-icon>
         </button>
       </mat-list-item>

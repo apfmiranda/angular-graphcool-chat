@@ -8,8 +8,18 @@
       <mat-error *ngIf="title.touched && title.hasError('minlength')" >Deve conter pelo menos 3 caracteres</mat-error>
     </mat-form-field>
 
+    <mat-nav-list *ngIf="members.controls.length > 0 " >
+      <h3 matSubheader>Selecionados</h3>
+      <mat-list-item *ngFor="let member of members.controls" >
+        <h3 matLine>{{ member.value.name }}</h3>
+        <button mat-icon-button>
+          <mat-icon >close</mat-icon>
+        </button>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+    </mat-nav-list>
 
-    <mat-list *ngIf="users$ | async as users" >
+    <mat-nav-list *ngIf="users$ | async as users" >
       <ng-container *ngIf="users.length > 0; else noUsersTemplate" >
         <h3 matSubheader>Adicione</h3>
         <mat-list-item *ngFor="let user of users" >
@@ -20,11 +30,13 @@
         </mat-list-item>
       </ng-container>
 
-    </mat-list>
+      <ng-template #noUsersTemplate>
+        <p>Nenhum usuário encontado</p>
+      </ng-template>
 
-    <ng-template #noUsersTemplate>
-      <p>Nenhum usuário encontado</p>
-    </ng-template>
+    </mat-nav-list>
+
+
   </mat-dialog-content>
 
   <mat-dialog-actions>

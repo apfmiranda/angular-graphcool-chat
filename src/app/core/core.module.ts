@@ -6,8 +6,8 @@ import { GraphQLModule } from './../graphql.module';
 
 @NgModule({
   exports: [
-    BrowserAnimationsModule,
-    GraphQLModule
+    GraphQLModule,
+    BrowserAnimationsModule
   ],
   declarations: []
 })

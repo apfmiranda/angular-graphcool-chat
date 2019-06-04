@@ -1,3 +1,4 @@
+import { AuthService } from './auth.service';
 import { map } from 'rxjs/operators';
 import { Observable, Subscription } from 'rxjs';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -15,12 +16,13 @@ export class UserService {
   private userSubscription: Subscription;
 
   constructor(
-    private apollo: Apollo
+    private apollo: Apollo,
+    private authService: AuthService
   ) { }
 
-  startUsersMonitoring(idUserToExclude: string): void {
+  startUsersMonitoring(): void {
     if (!this.users$) {
-      this.users$ = this.allUsers(idUserToExclude);
+      this.users$ = this.allUsers(this.authService.authUser.id);
       this.userSubscription = this.users$.subscribe();
     }
   }

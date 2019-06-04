@@ -15,10 +15,9 @@ import { MatSnackBar } from '@angular/material';
 export class AppComponent implements OnInit{
 
   constructor(
-    private appConfigService: AppConfigService,
     private authService: AuthService,
     private errorService: ErrorService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {

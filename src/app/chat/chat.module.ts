@@ -2,12 +2,11 @@ import {
   Router,
   RouterEvent,
   NavigationEnd,
-  RoutesRecognized,
-  Event
+  ResolveStart
 } from '@angular/router';
 
-import { NgModule, OnDestroy } from '@angular/core';
-import { filter, tap } from 'rxjs/operators';
+import { NgModule } from '@angular/core';
+import { filter, take } from 'rxjs/operators';
 
 import { AuthService } from './../core/services/auth.service';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
@@ -19,7 +18,6 @@ import { ChatUsersComponent } from './components/chat-users/chat-users.component
 import { ChatWindowComponent } from './components/chat-window/chat-window.component';
 import { UserService } from '../core/services/user.service';
 import { SharedModule } from './../shared/shared.module';
-import { Subscription, Observable } from 'rxjs';
 import { ChatAddGroupComponent } from './components/chat-add-group/chat-add-group.component';
 
 @NgModule({
@@ -39,40 +37,44 @@ import { ChatAddGroupComponent } from './components/chat-add-group/chat-add-grou
     ChatAddGroupComponent
   ]
 })
-export class ChatModule implements OnDestroy {
+export class ChatModule {
 
-  private subscriptionMonitoring: Subscription;
-  event$: Observable<Event>;
   private isMonitoring = false;
 
   constructor(
-    private router: Router,
     private authService: AuthService,
+    private router: Router,
     private chatService: ChatService,
-    private userService: UserService
+    private userService: UserService,
   ) {
 
-    this.event$ = this.router.events
-    .pipe(
-      filter(e => e instanceof RouterEvent),
-      tap(e => {
-        if (e instanceof RoutesRecognized && e.url.includes('chat')) {
+    this.authService.isAuthenticated
+      .pipe(take(1))
+          .subscribe((is: boolean) => {
+            if (is) {
+              this.init();
+            }
+      });
+
+  }
+
+  init(): void {
+    this.router.events
+      .pipe(filter(e => e instanceof RouterEvent))
+      .subscribe(e => {
+        if (e instanceof ResolveStart && e.url.includes('chat')) {
           this.startMonitoring();
         }
         if (e instanceof NavigationEnd && !e.url.includes('chat')) {
           this.stopMonitoring();
         }
-      })
-    );
-
-    this.subscriptionMonitoring = this.event$.subscribe();
-
+      });
   }
 
   private startMonitoring(): void {
     if (!this.isMonitoring) {
-      this.chatService.startChatsMonitoring();
-      this.userService.startUsersMonitoring(this.authService.authUser.id);
+      this.chatService.startChatsMonitoring(this.authService.authUser.id);
+      this.userService.startUsersMonitoring();
       this.isMonitoring = true;
     }
   }
@@ -83,9 +85,4 @@ export class ChatModule implements OnDestroy {
     this.isMonitoring = false;
   }
 
-  ngOnDestroy(): void {
-    this.subscriptionMonitoring.unsubscribe();
-  }
-
 }
-

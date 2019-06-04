@@ -12,8 +12,8 @@ import { DashboardModule } from './dashboard/dashboard.module';
   ],
   imports: [
     CoreModule,
-    DashboardModule,
     LoginModule,
+    DashboardModule,
     AppRoutingModule
   ],
   providers: [],

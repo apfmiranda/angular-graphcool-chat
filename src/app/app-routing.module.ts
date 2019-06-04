@@ -1,4 +1,3 @@
-import { DashboardModule } from './dashboard/dashboard.module';
 import { AuthGuard } from './login/auth.guard';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';

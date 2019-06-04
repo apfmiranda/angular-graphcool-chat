@@ -16,7 +16,8 @@ import {
   ChatQuery,
   CHAT_BY_ID_OR_BY_USERS_QUERY,
   CREATE_PRIVATE_CHAT_MUTATION,
-  USER_CHATS_SUBSCRIPTION} from './chat.graphql';
+  USER_CHATS_SUBSCRIPTION,
+  CREATE_GROUP_MUTATION} from './chat.graphql';
 
 import { Chat } from '../models/chat.model';
 
@@ -34,9 +35,9 @@ export class ChatService {
     private authService: AuthService
   ) { }
 
-  startChatsMonitoring(): void {
+  startChatsMonitoring(loggedUserId: string): void {
     if (!this.chats$) {
-      this.chats$ = this.getUserChats(this.authService.authUser.id);
+      this.chats$ = this.getUserChats(loggedUserId);
       this.subscriptions.push(this.chats$.subscribe());
     }
   }
@@ -201,6 +202,54 @@ export class ChatService {
       }).pipe(
         map(res => res.data.createChat)
       );
+  }
+
+  createGroup(variables: { title: string, usersIds: string[] }, loggedUserId: string): Observable<Chat> {
+
+    variables.usersIds.push(this.authService.authUser.id);
+
+    return this.apollo.mutate({
+      mutation: CREATE_GROUP_MUTATION,
+      variables,
+      optimisticResponse: {
+        __typename: 'Mutation',
+        createChat: {
+          __typename: 'Chat',
+          id: '',
+          title: variables.title,
+          createdAt: new Date().toISOString,
+          isGroup: true,
+          users: [
+            {
+              __typename: 'User',
+              id: '',
+              nome: '',
+              email: '',
+              createdAt: new Date().toISOString()
+            }
+          ],
+          messages: []
+        }
+      },
+      update: (store: DataProxy, {data: {createChat}}) => {
+
+        const userChatsVariables = {loggedUserId};
+
+        const userChatsData = store.readQuery<AllChatsQuery>({
+          query: USER_CHATS_QUERY,
+          variables: userChatsVariables
+        });
+        userChatsData.allChats = [createChat, ...userChatsData.allChats];
+        store.writeQuery<AllChatsQuery>({
+          query: USER_CHATS_QUERY,
+          variables: userChatsVariables,
+          data: userChatsData
+        });
+      }
+
+    }).pipe(
+      map(res => res.data.createChat)
+    );
   }
 
   private onDestroy(): void {

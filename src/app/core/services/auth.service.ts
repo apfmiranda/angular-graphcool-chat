@@ -69,8 +69,10 @@ export class AuthService {
 
   autoLogin(): Observable<void> {
     if (!this.keepSigned) {
-      this._isAuthenticated.next(false);
-      localStorage.removeItem(StorageKeys.AUTH_TOKEN);
+      // this._isAuthenticated.next(false);
+      // localStorage.removeItem(StorageKeys.AUTH_TOKEN);
+      // this.apollo.getClient().resetStore();
+      this.logout();
       return of();
     }
 

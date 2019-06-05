@@ -4,9 +4,10 @@ import { User } from './../../../core/models/user.model';
 import { Observable, Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { Chat } from '../../models/chat.model';
 
 @Component({
   selector: 'app-chat-add-group',
@@ -24,6 +25,8 @@ export class ChatAddGroupComponent implements OnInit, OnDestroy{
     private userService: UserService,
     private authService: AuthService,
     private chatService: ChatService,
+    private snackBar: MatSnackBar,
+    public dialogRef: MatDialogRef<ChatAddGroupComponent>
   ) {}
 
   ngOnInit(): void {
@@ -75,7 +78,10 @@ export class ChatAddGroupComponent implements OnInit, OnDestroy{
 
     this.chatService.createGroup(formValue)
       .pipe(take(1))
-      .subscribe();
+      .subscribe((chat: Chat) => {
+        this.dialogRef.close();
+        this.snackBar.open(`Chat "${chat.title}" criado`, 'OK', { duration: 4000, verticalPosition: 'top' });
+      });
   }
 
   ngOnDestroy(): void {

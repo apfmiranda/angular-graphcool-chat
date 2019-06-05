@@ -50,7 +50,7 @@ export class ChatListComponent extends BaseComponent<Chat> implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed: ', result);
+      // console.log('The dialog was closed: ', result);
     });
   }
 

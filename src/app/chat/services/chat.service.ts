@@ -204,9 +204,9 @@ export class ChatService {
       );
   }
 
-  createGroup(variables: { title: string, usersIds: string[] }, loggedUserId: string): Observable<Chat> {
+  createGroup(variables: { title: string, userIds: string[], loggedUserId: string }): Observable<Chat> {
 
-    variables.usersIds.push(this.authService.authUser.id);
+    variables.userIds.push(this.authService.authUser.id);
 
     return this.apollo.mutate({
       mutation: CREATE_GROUP_MUTATION,
@@ -223,7 +223,7 @@ export class ChatService {
             {
               __typename: 'User',
               id: '',
-              nome: '',
+              name: '',
               email: '',
               createdAt: new Date().toISOString()
             }
@@ -233,7 +233,7 @@ export class ChatService {
       },
       update: (store: DataProxy, {data: {createChat}}) => {
 
-        const userChatsVariables = {loggedUserId};
+        const userChatsVariables = { loggedUserId: variables.loggedUserId } ;
 
         const userChatsData = store.readQuery<AllChatsQuery>({
           query: USER_CHATS_QUERY,

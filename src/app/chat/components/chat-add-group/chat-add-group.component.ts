@@ -1,10 +1,12 @@
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { UserService } from 'src/app/core/services/user.service';
 import { User } from './../../../core/models/user.model';
 import { Observable, Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
+import { ChatService } from '../../services/chat.service';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-chat-add-group',
@@ -20,7 +22,8 @@ export class ChatAddGroupComponent implements OnInit, OnDestroy{
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    public dialogRef: MatDialogRef<ChatAddGroupComponent>
+    private authService: AuthService,
+    private chatService: ChatService,
   ) {}
 
   ngOnInit(): void {
@@ -56,7 +59,6 @@ export class ChatAddGroupComponent implements OnInit, OnDestroy{
       id: user.id,
       name: user.name
     }));
-    console.log(this.newGroupForm.value);
   }
 
   removeMember(index: number) {
@@ -64,12 +66,16 @@ export class ChatAddGroupComponent implements OnInit, OnDestroy{
   }
 
   onSubmit(): void {
-    console.log('Form Value: ', this.newGroupForm.value);
-
+    const loggedUserId = this.authService.authUser.id;
     const formValue = Object.assign({
       title: this.title.value,
-      usersId: this.members.value.map(member => member.id)
+      userIds: this.members.value.map(member => member.id),
+      loggedUserId
     });
+
+    this.chatService.createGroup(formValue)
+      .pipe(take(1))
+      .subscribe();
   }
 
   ngOnDestroy(): void {

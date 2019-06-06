@@ -34,6 +34,11 @@ export class DashboardResourcesComponent implements OnInit {
       url: '/dashboard/chat/users',
       icon: 'people',
       title: 'Usuários'
+    },
+    {
+      url: '/dashboard/profile',
+      icon: 'person',
+      title: 'Perfil'
     }
   ];
 

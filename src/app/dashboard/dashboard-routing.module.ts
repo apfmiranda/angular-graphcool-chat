@@ -13,11 +13,8 @@ const routes: Routes = [
     canActivate: [ AuthGuard ],
     canActivateChild: [ AuthGuard ],
     children: [
-      {
-        path: 'chat',
-        loadChildren: './../chat/chat.module#ChatModule',
-        canActivate: [ AuthGuard ]
-      },
+      { path: 'chat', loadChildren: './../chat/chat.module#ChatModule', canActivate: [ AuthGuard ] },
+      { path: 'profile', loadChildren: './../user/user.module#UserModule', canActivate: [ AuthGuard ] },
       { path: '', component: DashboardResourcesComponent }
     ]
   }

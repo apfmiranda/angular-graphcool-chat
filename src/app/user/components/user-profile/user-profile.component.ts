@@ -12,13 +12,18 @@ import { UserService } from 'src/app/core/services/user.service';
 export class UserProfileComponent implements OnInit {
 
   user: User;
+  isEditing = false;
 
   constructor(
     private authService: AuthService
   ) { }
 
   ngOnInit() {
-    this.user = this.authService.authUser;
+    this.user = JSON.parse(JSON.stringify(this.authService.authUser));
+  }
+
+  onSave(): void {
+    console.log('user: ', this.user);
   }
 
 }

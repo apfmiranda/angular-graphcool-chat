@@ -1,3 +1,4 @@
+import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth.service';
@@ -15,7 +16,8 @@ export class UserProfileComponent implements OnInit {
   isEditing = false;
 
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService
   ) { }
 
   ngOnInit() {
@@ -23,7 +25,9 @@ export class UserProfileComponent implements OnInit {
   }
 
   onSave(): void {
-    console.log('user: ', this.user);
+    this.userService.updateUser(this.user)
+      .pipe(take(1))
+      .subscribe();
   }
 
 }

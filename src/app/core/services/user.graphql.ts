@@ -44,7 +44,7 @@ export const GET_USER_BY_ID_QUERY = gql `
 `;
 
 export const UPDATE_USER_MUTATION = gql`
-  mutation UpdateUserMutation($userId: ID!, $name: string!, $email: string!) {
+  mutation UpdateUserMutation($userId: ID!, $name: String!, $email: String!) {
     updateUser(
       id: $userId
       name: $name

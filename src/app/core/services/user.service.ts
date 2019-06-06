@@ -8,7 +8,8 @@ import {
   ALL_USERS_QUERY,
   GET_USER_BY_ID_QUERY,
   NEW_USERS_SUBSCRIPTON,
-  UserQuery } from './user.graphql';
+  UserQuery,
+  UPDATE_USER_MUTATION} from './user.graphql';
 
 @Injectable({
   providedIn: 'root'
@@ -78,6 +79,16 @@ export class UserService {
       }).pipe(
         map(res => res.data.User)
       );
+  }
+
+  updateUser(user: User): Observable<User> {
+    return this.apollo
+    .mutate({
+      mutation: UPDATE_USER_MUTATION,
+      variables: {userId: user.id, name: user.name, email: user.email}
+    }).pipe(
+      map(res => res.data.updateUser)
+    );
   }
 
 }

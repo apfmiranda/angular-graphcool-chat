@@ -74,7 +74,7 @@ export class ChatModule {
   private startMonitoring(): void {
     if (!this.isMonitoring) {
       this.chatService.startChatsMonitoring(this.authService.authUser.id);
-      this.userService.startUsersMonitoring();
+      this.userService.startUsersMonitoring(this.authService.authUser.id);
       this.isMonitoring = true;
     }
   }

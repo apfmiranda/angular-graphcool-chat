@@ -1,10 +1,14 @@
-import { AuthService } from './auth.service';
-import { map } from 'rxjs/operators';
-import { Observable, Subscription } from 'rxjs';
-import { Apollo, QueryRef } from 'apollo-angular';
 import { Injectable } from '@angular/core';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { User } from '../models/user.model';
-import { ALL_USERS_QUERY, AllUsersQuery, UserQuery, GET_USER_BY_ID_QUERY, NEW_USERS_SUBSCRIPTON } from './user.graphql';
+import {
+  AllUsersQuery,
+  ALL_USERS_QUERY,
+  GET_USER_BY_ID_QUERY,
+  NEW_USERS_SUBSCRIPTON,
+  UserQuery } from './user.graphql';
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +21,11 @@ export class UserService {
 
   constructor(
     private apollo: Apollo,
-    private authService: AuthService
   ) { }
 
-  startUsersMonitoring(): void {
+  startUsersMonitoring(idToExclude: string): void {
     if (!this.users$) {
-      this.users$ = this.allUsers(this.authService.authUser.id);
+      this.users$ = this.allUsers(idToExclude);
       this.userSubscription = this.users$.subscribe();
     }
   }
@@ -67,7 +70,7 @@ export class UserService {
       );
   }
 
-  getUserById(userId: string) {
+  getUserById(userId: string): Observable<User>  {
     return this.apollo
       .query<UserQuery>({
         query: GET_USER_BY_ID_QUERY,

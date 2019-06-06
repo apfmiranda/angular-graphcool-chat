@@ -1,9 +1,10 @@
+import { UserService } from 'src/app/core/services/user.service';
 import { GraphQLModule } from './../../graphql.module';
 import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject, throwError, of } from 'rxjs';
 import { Apollo } from 'apollo-angular';
-import { tap, map, catchError, mergeMap } from 'rxjs/operators';
+import { tap, map, catchError, mergeMap, take } from 'rxjs/operators';
 import { Base64 } from 'js-base64';
 
 import { AUTHENTICATE_USER_MUTATION, SIGNUP_USER_MUTATION, LoggedInUserQuery, LOGGED_IN_USER_QUERY } from './auth.graphql';
@@ -24,7 +25,8 @@ export class AuthService {
   constructor(
     private apollo: Apollo,
     private graphQLModule: GraphQLModule,
-    private router: Router
+    private router: Router,
+    private userService: UserService
   ) {
     this.isAuthenticated.subscribe();
     this.init();
@@ -69,9 +71,6 @@ export class AuthService {
 
   autoLogin(): Observable<void> {
     if (!this.keepSigned) {
-      // this._isAuthenticated.next(false);
-      // localStorage.removeItem(StorageKeys.AUTH_TOKEN);
-      // this.apollo.getClient().resetStore();
       this.logout();
       return of();
     }
@@ -140,20 +139,32 @@ export class AuthService {
   }
 
   logout(): void {
-    this.graphQLModule.closeSocketConnect();
     localStorage.removeItem(StorageKeys.AUTH_TOKEN);
     localStorage.removeItem(StorageKeys.KEEP_SIGNED);
-    this.graphQLModule.cachePersistor.purge();
     this.keepSigned = false;
+    this.graphQLModule.closeSocketConnect();
+    this.graphQLModule.cachePersistor.purge();
     this._isAuthenticated.next(false);
-    this.router.navigate(['/login']);
     this.apollo.getClient().resetStore();
+    this.router.navigate(['/login']);
+  }
+
+  private setAuthUser(userId: string): Observable<User> {
+    return this.userService.getUserById(userId)
+      .pipe(
+        take(1),
+        tap((user: User) => this.authUser = user)
+      );
   }
 
   private setAuthState(authData: { id: string, token: string, isAuthenticated: boolean}, isRefresh: boolean = false): void {
     if (authData.isAuthenticated) {
       localStorage.setItem(StorageKeys.AUTH_TOKEN, authData.token);
-      this.authUser = { id: authData.id };
+      this.setAuthUser(authData.id)
+        .pipe(
+          take(1),
+          tap(() => this._isAuthenticated.next(authData.isAuthenticated))
+        ).subscribe();
       if (!isRefresh) {
         this.graphQLModule.closeSocketConnect();
       }

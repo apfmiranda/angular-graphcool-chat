@@ -1,3 +1,4 @@
+import { BaseService } from 'src/app/core/services/base.service';
 import { AuthService } from './../../core/services/auth.service';
 import { AllChatsQuery, USER_CHATS_QUERY } from './chat.graphql';
 import { Message } from './../models/message.model';
@@ -11,12 +12,14 @@ import { DataProxy } from 'apollo-cache';
 @Injectable({
   providedIn: 'root'
 })
-export class MessageService {
+export class MessageService extends BaseService {
 
   constructor(
     private apollo: Apollo,
     private authService: AuthService
-  ) { }
+  ) {
+    super();
+  }
 
   getChatMessages(chatId: string): Observable<Message[]> {
     return this.apollo
@@ -55,23 +58,16 @@ export class MessageService {
         },
       },
       update: (store: DataProxy, {data: {createMessage}}) => {
-        try {
-          // lendo query
-          const data = store.readQuery<AllMessagesQuery>({
-            query: GET_CHAT_MESSAGES_QUERY,
-            variables: { chatId: message.chatId }
-          });
-          // alterando query, colocando um novo item na lista
-          data.allMessages = [...data.allMessages, createMessage];
-          // colocando a nova lista no cache
-          store.writeQuery({
-            query: GET_CHAT_MESSAGES_QUERY,
-            variables: { chatId: message.chatId },
-            data
-          });
-        } catch (error) {
-          console.log('allMessageQuery not found');
-        }
+
+        this.readAndWriteQueryInApolloCache<Message>({
+          store,
+          newRecord: createMessage,
+          query: GET_CHAT_MESSAGES_QUERY,
+          queryName: 'allMessages',
+          arrayOperation: 'push',
+          variables: { chatId: message.chatId }
+        });
+
 
         try {
 

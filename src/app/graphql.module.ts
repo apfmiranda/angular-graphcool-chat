@@ -59,10 +59,12 @@ export class GraphQLModule {
     const client = new SubscriptionClient(this.graphcoolConfig.subscriptionsAPI,
       {
         reconnect: true,
-        timeout: 30000,
-        lazy: false,
+        timeout: 20000,
+        lazy: true,
         connectionParams: () => ({ Authorization: `Bearer ${this.getAuthToken()}` })
       });
+
+    // (client as any).maxConnectTimeGenerator.duration = () => (client as any).maxConnectTimeGenerator.max;
     const ws = new WebSocketLink(client);
     this.subscriptionClient = client;
     this.logSubscriptionClient(client, false);

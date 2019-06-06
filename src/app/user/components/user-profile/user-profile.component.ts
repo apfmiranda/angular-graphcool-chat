@@ -1,9 +1,11 @@
+import { ErrorService } from './../../../core/services/error.service';
 import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { User } from 'src/app/core/models/user.model';
 import { UserService } from 'src/app/core/services/user.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-user-profile',
@@ -17,7 +19,9 @@ export class UserProfileComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private snackBar: MatSnackBar,
+    private errorService: ErrorService
   ) { }
 
   ngOnInit() {
@@ -25,9 +29,19 @@ export class UserProfileComponent implements OnInit {
   }
 
   onSave(): void {
+    let message: string;
     this.userService.updateUser(this.user)
       .pipe(take(1))
-      .subscribe();
+      .subscribe(
+        (user: User) => message = `Usuário: ${user.name}, Atualizado!`,
+        (erro) => message = this.errorService.getErrorMessage(erro),
+        () => {
+          this.snackBar.open(message, 'Ok', {
+            duration: 4000,
+            verticalPosition: 'top'
+          });
+        });
+
   }
 
 }

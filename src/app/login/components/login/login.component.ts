@@ -69,12 +69,12 @@ export class LoginComponent implements OnInit, OnDestroy {
 
         this.authService.isAuthenticated
         .pipe(takeWhile(() => this.componentAlive))
-            .subscribe((is: boolean) => {
-              if (is) {
-                this.router.navigate([redirect]);
-                this.authService.redirectUrl = null;
-                this.configs.isLoading = false;
-              }
+        .subscribe((is: boolean) => {
+          if (is) {
+            this.router.navigate([redirect]);
+            this.authService.redirectUrl = null;
+            this.configs.isLoading = false;
+          }
         });
       },
       error => {

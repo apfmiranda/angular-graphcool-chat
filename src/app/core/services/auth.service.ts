@@ -152,7 +152,6 @@ export class AuthService {
   private setAuthUser(userId: string): Observable<User> {
     return this.userService.getUserById(userId)
       .pipe(
-        take(1),
         tap((user: User) => this.authUser = user)
       );
   }
@@ -168,6 +167,7 @@ export class AuthService {
       if (!isRefresh) {
         this.graphQLModule.closeSocketConnect();
       }
+      return;
     }
     this._isAuthenticated.next(authData.isAuthenticated);
   }

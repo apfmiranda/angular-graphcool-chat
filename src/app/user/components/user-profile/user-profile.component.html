@@ -4,7 +4,7 @@
     <div class="photo">
       <app-avatar
         mat-card-avatar
-        title="Auth User"
+        title="Usuário Autenticado"
         src="assets/images/user-no-photo.png">
       </app-avatar>
       <button mat-icon-button color="primary" class="btn-edit-user">
@@ -18,6 +18,57 @@
       <h2>{{ user.name }}</h2>
       <p>{{ user.email }}</p>
     </ng-container>
+
+    <form #userForm="ngForm">
+      <div>
+        <mat-form-field>
+
+          <input
+            matInput
+            required
+            minlength="5"
+            type="text"
+            name="name"
+            class="text-center"
+            placeholder="Name"
+            [(ngModel)]="user.name"
+            #name="ngModel">
+
+          <mat-error *ngIf="name.touched && name.hasError('required')">
+            Este Campo é obrigatório
+          </mat-error>
+          <mat-error *ngIf="name.touched && name.hasError('minlength')">
+            Digite ao menos 5 caracters
+          </mat-error>
+
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field>
+
+          <input
+            matInput
+            required
+            email
+            type="email"
+            name="email"
+            class="text-center"
+            placeholder="Email"
+            [(ngModel)]="user.email"
+            #email="ngModel">
+
+          <mat-error *ngIf="email.touched && email.hasError('required')">
+            Este Campo é obrigatório
+          </mat-error>
+          <mat-error *ngIf="email.touched && email.hasError('email')">
+            E-mail inválido
+          </mat-error>
+
+        </mat-form-field>
+      </div>
+    </form>
+
   </mat-card-content>
 
 </mat-card>
@@ -25,7 +76,7 @@
 <mat-toolbar color="primary" class="fixed-bottom">
   <h1>Actions</h1>
   <span class="spacer"></span>
-  <button mat-icon-button title="Save">
+  <button mat-icon-button title="Save" [disabled]="userForm.invalid">
     <mat-icon>checked</mat-icon>
   </button>
 </mat-toolbar>

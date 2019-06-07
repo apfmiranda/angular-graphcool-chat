@@ -23,3 +23,7 @@ app-login .mat-spinner circle {
 .app-user-profile .mat-spinner circle {
   stroke: #fff;
 }
+
+.mat-dialog-no-padding .mat-dialog-container {
+ padding: 0;
+}

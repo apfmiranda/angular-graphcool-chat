@@ -1,11 +1,11 @@
 import { ErrorService } from './../../../core/services/error.service';
 import { take } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 import { Component, OnInit, HostBinding } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { User } from 'src/app/core/models/user.model';
 import { UserService } from 'src/app/core/services/user.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatDialog } from '@angular/material';
+import { ImagePreviewComponent } from 'src/app/shared/components/image-preview/image-preview.component';
 
 @Component({
   selector: 'app-user-profile',
@@ -23,11 +23,28 @@ export class UserProfileComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private snackBar: MatSnackBar,
+    private dialog: MatDialog,
     private errorService: ErrorService
   ) { }
 
   ngOnInit() {
     this.user = JSON.parse(JSON.stringify(this.authService.authUser));
+  }
+
+  triggerInputFile(input: HTMLInputElement): void {
+    input.click();
+  }
+  onSelectImage(event: Event): void {
+    const input: HTMLInputElement = (event.target as HTMLInputElement);
+    const file: File = input.files[0];
+    const dialogRef = this.dialog.open<ImagePreviewComponent, { image: File }, {canSave: boolean, selectedImage: File}>(
+      ImagePreviewComponent,
+      {
+        data: { image: file },
+        panelClass: 'mat-dialog-no-padding',
+        maxHeight: '80vh'
+      }
+    );
   }
 
   onSave(): void {

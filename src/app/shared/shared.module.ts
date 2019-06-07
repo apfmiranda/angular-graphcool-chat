@@ -19,21 +19,31 @@ import {
 import { NoRecordComponent } from './components/no-record/no-record.component';
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { FromNowPipe } from './pipes/from-now.pipe';
+import { ImagePreviewComponent } from './components/image-preview/image-preview.component';
 
 @NgModule({
   declarations: [
     AvatarComponent,
     NoRecordComponent,
-    FromNowPipe
+    FromNowPipe,
+    ImagePreviewComponent
   ],
   imports: [
     MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatCardModule,
+    MatToolbarModule,
     CommonModule
+  ],
+  entryComponents: [
+    ImagePreviewComponent
   ],
   exports: [
     AvatarComponent,
     CommonModule,
     FromNowPipe,
+    ImagePreviewComponent,
     NoRecordComponent,
     ReactiveFormsModule,
     FormsModule,

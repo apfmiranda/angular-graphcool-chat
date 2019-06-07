@@ -56,11 +56,11 @@ export const UPDATE_USER_MUTATION = gql`
   ${UserFragment}
 `;
 
-export const NEW_USERS_SUBSCRIPTON = gql`
-  subscription NewUserSubscription {
+export const USERS_SUBSCRIPTON = gql`
+  subscription UserSubscription {
     User(
       filter: {
-        mutation_in: [CREATED]
+        mutation_in: [CREATED, UPDATED]
       }
     ) {
       mutation

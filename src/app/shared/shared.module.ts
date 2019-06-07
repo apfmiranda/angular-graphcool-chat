@@ -20,13 +20,15 @@ import { NoRecordComponent } from './components/no-record/no-record.component';
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { FromNowPipe } from './pipes/from-now.pipe';
 import { ImagePreviewComponent } from './components/image-preview/image-preview.component';
+import { ReadFilePipe } from './pipes/read-file.pipe';
 
 @NgModule({
   declarations: [
     AvatarComponent,
     NoRecordComponent,
     FromNowPipe,
-    ImagePreviewComponent
+    ImagePreviewComponent,
+    ReadFilePipe
   ],
   imports: [
     MatIconModule,
@@ -42,6 +44,7 @@ import { ImagePreviewComponent } from './components/image-preview/image-preview.
   exports: [
     AvatarComponent,
     CommonModule,
+    ReadFilePipe,
     FromNowPipe,
     ImagePreviewComponent,
     NoRecordComponent,

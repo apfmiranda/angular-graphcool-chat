@@ -45,6 +45,15 @@ export class UserProfileComponent implements OnInit {
         maxHeight: '80vh'
       }
     );
+
+    dialogRef.afterClosed()
+    .pipe(take(1))
+    .subscribe(dialogData => {
+      input.value = '';
+      if (dialogData && dialogData.canSave) {
+
+      }
+    });
   }
 
   onSave(): void {

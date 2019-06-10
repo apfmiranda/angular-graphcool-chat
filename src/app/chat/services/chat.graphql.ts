@@ -1,3 +1,4 @@
+import { fileFragment } from './../../core/services/file.graphql';
 import { Chat } from './../models/chat.model';
 
 import gql from 'graphql-tag';
@@ -26,8 +27,12 @@ const ChatFragment = gql`
       name
       email
       createdAt
+      photo {
+        ...fileFragment
+      }
     }
   }
+  ${fileFragment}
 `;
 
 const ChatMessagesFragment = gql`

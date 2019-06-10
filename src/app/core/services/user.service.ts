@@ -86,7 +86,8 @@ export class UserService {
 
     return this.queryRef.valueChanges
       .pipe(
-        map(res => res.data.allUsers)
+        map(res => res.data.allUsers),
+        map(users => users.map(u => new User(u)))
       );
   }
 
@@ -96,7 +97,8 @@ export class UserService {
         query: GET_USER_BY_ID_QUERY,
         variables: { userId }
       }).pipe(
-        map(res => res.data.User)
+        map(res => res.data.User),
+        map(user => new User(user))
       );
   }
 
@@ -110,7 +112,7 @@ export class UserService {
     );
   }
 
-  updateUserFile(file: File, user: User): Observable<User> {
+  updateUserPhoto(file: File, user: User): Observable<User> {
     return this.fileService.upload(file)
       .pipe(
         mergeMap((newPhoto: FileModel) => {

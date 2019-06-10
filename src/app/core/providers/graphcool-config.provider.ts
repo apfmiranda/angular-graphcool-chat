@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 
-const graphcoolId = 'gfc-app-chat';
+const graphcoolId = '';
 
 export interface GraphcoolConfig {
   simpleAPI: string;

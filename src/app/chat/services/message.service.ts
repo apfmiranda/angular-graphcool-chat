@@ -1,3 +1,4 @@
+import { User } from './../../core/models/user.model';
 import { BaseService } from 'src/app/core/services/base.service';
 import { AuthService } from './../../core/services/auth.service';
 import { AllChatsQuery, USER_CHATS_QUERY } from './chat.graphql';
@@ -29,7 +30,12 @@ export class MessageService extends BaseService {
         fetchPolicy: 'network-only'
       }).valueChanges
       .pipe(
-        map(res => res.data.allMessages)
+        map(res => res.data.allMessages),
+        map(messages => messages.map(m => {
+          const message = Object.assign({}, m);
+          message.sender = new User(message.sender);
+          return message;
+        }))
       );
   }
 

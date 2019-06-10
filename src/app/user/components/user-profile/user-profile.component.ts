@@ -28,7 +28,7 @@ export class UserProfileComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.user = JSON.parse(JSON.stringify(this.authService.authUser));
+    this.user = this.authService.authUser;
   }
 
   triggerInputFile(input: HTMLInputElement): void {
@@ -51,7 +51,18 @@ export class UserProfileComponent implements OnInit {
     .subscribe(dialogData => {
       input.value = '';
       if (dialogData && dialogData.canSave) {
-
+        this.isLoading = true;
+        let message: string;
+        this.userService.updateUserPhoto(
+          dialogData.selectedImage,
+          this.authService.authUser
+        ).pipe(take(1)).subscribe(
+          (user: User) => message = `Usuário: ${user.name},  Atualizado!`,
+          (erro) => message = this.errorService.getErrorMessage(erro),
+          () => {
+            this.isLoading = false;
+            this.showMessage(message);
+          });
       }
     });
   }
@@ -66,13 +77,17 @@ export class UserProfileComponent implements OnInit {
         (user: User) => message = `Usuário: ${user.name},  Atualizado!`,
         (erro) => message = this.errorService.getErrorMessage(erro),
         () => {
-          this.snackBar.open(message, 'Ok', {
-            duration: 4000,
-            verticalPosition: 'top'
-          });
           this.isLoading = false;
+          this.showMessage(message);
         });
 
+  }
+
+  private showMessage(message: string): void {
+    this.snackBar.open(message, 'Ok', {
+      duration: 4000,
+      verticalPosition: 'top'
+    });
   }
 
 }

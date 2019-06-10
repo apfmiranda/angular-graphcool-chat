@@ -17,6 +17,7 @@ import { Chat } from '../../models/chat.model';
 export class ChatAddGroupComponent implements OnInit, OnDestroy{
 
   newGroupForm: FormGroup;
+  selectedImage: File;
   users$: Observable<User[]>;
   private subscriptions: Subscription[] = [];
 
@@ -66,6 +67,11 @@ export class ChatAddGroupComponent implements OnInit, OnDestroy{
 
   removeMember(index: number) {
     this.members.removeAt(index);
+  }
+
+  onSelectImage(event: Event): void {
+    const file = (event.target as HTMLInputElement).files[0];
+    this.selectedImage = file;
   }
 
   onSubmit(): void {

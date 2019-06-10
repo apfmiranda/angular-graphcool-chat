@@ -55,7 +55,12 @@ export class MessageService extends BaseService {
             id: message.senderId,
             name: 'you',
             email: '',
-            createdAt: ''
+            createdAt: '',
+            photo: {
+              __typename: 'File',
+              id: '',
+              secret: this.authService.authUser.photo && this.authService.authUser.photo.secret || ''
+            }
           },
           chat: {
             __typename: 'Chat',

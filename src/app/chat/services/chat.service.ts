@@ -1,3 +1,4 @@
+import { User } from './../../core/models/user.model';
 import { Message } from './../models/message.model';
 import { AuthService } from './../../core/services/auth.service';
 import { Injectable } from '@angular/core';
@@ -147,7 +148,12 @@ export class ChatService extends BaseService {
 
             return valueB - valueA;
           });
-        })
+        }),
+        map(chats => chats.map(c => {
+          const chat = new Chat(c);
+          chat.users = chat.users.map(u => new User(u));
+          return chat;
+        }))
       );
   }
 
@@ -207,15 +213,25 @@ export class ChatService extends BaseService {
           __typename: 'Chat',
           id: '',
           title: variables.title,
-          createdAt: new Date().toISOString,
+          createdAt: new Date().toISOString(),
           isGroup: true,
+          photo: {
+            __typename: 'File',
+            id: '',
+            secret: ''
+          },
           users: [
             {
               __typename: 'User',
               id: '',
               name: '',
               email: '',
-              createdAt: new Date().toISOString()
+              createdAt: new Date().toISOString(),
+              photo: {
+                __typename: 'File',
+                id: '',
+                secret: ''
+              }
             }
           ],
           messages: []

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-Component({
+@Component({
   selector: 'app-warning',
   template: `
     <div class="warning-container">
@@ -27,5 +27,5 @@ Component({
     }
     `
   ]
-});
+})
 export class WarningComponent {}

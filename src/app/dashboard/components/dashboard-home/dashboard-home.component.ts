@@ -1,5 +1,6 @@
+import { BaseComponent } from './../../../shared/components/base.component';
 import { Component } from '@angular/core';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav, MatDialog } from '@angular/material';
 
 import { AuthService } from './../../../core/services/auth.service';
 
@@ -8,16 +9,18 @@ import { AuthService } from './../../../core/services/auth.service';
   templateUrl: './dashboard-home.component.html',
   styleUrls: ['./dashboard-home.component.scss']
 })
-export class DashboardHomeComponent {
+export class DashboardHomeComponent extends BaseComponent<any>{
 
   constructor(
-    private autService: AuthService
-  ) { }
+    authService: AuthService,
+    dialog: MatDialog
+  ) {
+    super(authService, dialog);
+  }
 
   onLogout(sidenav: MatSidenav): void {
-    sidenav.close().then(
-      () => this.autService.logout()
-    );
+    sidenav.close();
+    this.logout();
   }
 
 }

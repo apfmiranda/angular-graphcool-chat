@@ -21,6 +21,7 @@ import { AvatarComponent } from './components/avatar/avatar.component';
 import { FromNowPipe } from './pipes/from-now.pipe';
 import { ImagePreviewComponent } from './components/image-preview/image-preview.component';
 import { ReadFilePipe } from './pipes/read-file.pipe';
+import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm/dialog-confirm.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { ReadFilePipe } from './pipes/read-file.pipe';
     NoRecordComponent,
     FromNowPipe,
     ImagePreviewComponent,
-    ReadFilePipe
+    ReadFilePipe,
+    DialogConfirmComponent
   ],
   imports: [
     MatIconModule,
@@ -39,7 +41,8 @@ import { ReadFilePipe } from './pipes/read-file.pipe';
     CommonModule
   ],
   entryComponents: [
-    ImagePreviewComponent
+    ImagePreviewComponent,
+    DialogConfirmComponent
   ],
   exports: [
     AvatarComponent,
@@ -63,7 +66,8 @@ import { ReadFilePipe } from './pipes/read-file.pipe';
     MatIconModule,
     MatTabsModule,
     MatMenuModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    DialogConfirmComponent
   ]
 })
 export class SharedModule { }

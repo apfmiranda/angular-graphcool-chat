@@ -22,6 +22,7 @@ import { FromNowPipe } from './pipes/from-now.pipe';
 import { ImagePreviewComponent } from './components/image-preview/image-preview.component';
 import { ReadFilePipe } from './pipes/read-file.pipe';
 import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm/dialog-confirm.component';
+import { WarningComponent } from './components/warning/warning.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confi
     FromNowPipe,
     ImagePreviewComponent,
     ReadFilePipe,
-    DialogConfirmComponent
+    DialogConfirmComponent,
+    WarningComponent
   ],
   imports: [
     MatIconModule,
@@ -67,7 +69,8 @@ import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confi
     MatTabsModule,
     MatMenuModule,
     MatSlideToggleModule,
-    DialogConfirmComponent
+    DialogConfirmComponent,
+    WarningComponent
   ]
 })
 export class SharedModule { }

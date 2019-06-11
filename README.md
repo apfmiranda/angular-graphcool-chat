@@ -25,3 +25,13 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+
+# Docker
+## Build the image
+$ docker build -t myapp .
+
+## Run the container
+$ docker run -p 8080:80 myapp
+
+And done, your dockerized app will be accessible at [http://localhost:8080](http://localhost:8080)

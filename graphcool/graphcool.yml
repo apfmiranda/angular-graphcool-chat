@@ -109,6 +109,7 @@ permissions:
   # Relations
   - operation: UsersOnChats.connect
     authenticated: true
+    query: src/permissions/permitSendMessageToChat.graphql
   - operation: UsersOnChats.disconnect
     authenticated: true
 

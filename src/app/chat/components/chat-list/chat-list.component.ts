@@ -45,7 +45,7 @@ export class ChatListComponent extends BaseComponent<Chat> implements OnInit {
 
   onAddGroup(): void {
     const dialogRef = this.dialog.open(ChatAddGroupComponent, {
-      height: '80vh',
+      maxHeight: '80vh',
       width: '400px',
     });
 

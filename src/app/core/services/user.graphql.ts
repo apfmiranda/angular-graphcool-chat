@@ -62,7 +62,7 @@ export const UPDATE_USER_MUTATION = gql`
 `;
 
 const updateUserPhotoMutation = `
-  updateUser(id: $loggedUserId, photoId: $newPhotoId) {
+  updateUser(id: $loggedUserId, photoId: $newPhotoId, dummy: "dummy") {
     ...UserFragment
   }
 `;

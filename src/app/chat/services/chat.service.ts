@@ -157,7 +157,7 @@ export class ChatService extends BaseService {
       );
   }
 
-  getChatByIdOrUsers(chatOrUserId: string, loggedUserId: string): Observable<Chat> {
+  getChatByIdOrByUsers(chatOrUserId: string, loggedUserId: string): Observable<Chat> {
     return this.apollo.query<ChatQuery | AllChatsQuery>({
       query: CHAT_BY_ID_OR_BY_USERS_QUERY,
       variables: {

@@ -6,6 +6,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 
 import { SharedModule } from '../shared/shared.module';
 import { DashboardResourcesComponent } from './components/dashboard-resources/dashboard-resources.component';
+import { DashboardPermissionDeniedComponent } from './components/dashboard-permission-denied/dashboard-permission-denied.component';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { DashboardResourcesComponent } from './components/dashboard-resources/da
   declarations: [
     DashboardHomeComponent,
     DashboardHeaderComponent,
-    DashboardResourcesComponent
+    DashboardResourcesComponent,
+    DashboardPermissionDeniedComponent
   ]
 })
 export class DashboardModule { }

@@ -1,4 +1,4 @@
-import { ChatModule } from './../chat/chat.module';
+import { DashboardPermissionDeniedComponent } from './components/dashboard-permission-denied/dashboard-permission-denied.component';
 import { NgModule } from '@angular/core';
 import { AuthGuard } from './../login/auth.guard';
 import { Routes, RouterModule } from '@angular/router';
@@ -15,6 +15,7 @@ const routes: Routes = [
     children: [
       { path: 'chat', loadChildren: './../chat/chat.module#ChatModule', canActivate: [ AuthGuard ] },
       { path: 'profile', loadChildren: './../user/user.module#UserModule', canActivate: [ AuthGuard ] },
+      { path: 'permission-denied', component: DashboardPermissionDeniedComponent, canActivate: [ AuthGuard ] },
       { path: '', component: DashboardResourcesComponent }
     ]
   }

@@ -81,9 +81,10 @@ export class LoginComponent implements OnInit, OnDestroy {
         console.log('Erro onSubmit(): ', error);
         this.configs.isLoading = false;
         this.snackBar.open(this.errorService.getErrorMessage(error), 'ok', {duration: 5000, verticalPosition: 'top'});
-      }
-      // () => console.log('Observable completado!')
+      },
+      () => {}
     );
+
   }
 
   changeAction(): void {

@@ -1,0 +1,26 @@
+{
+  "name": "apf-chat-app",
+  "version": 2,
+  "alias": "apf-chat-app",
+  "public": true,
+  "builds": [
+    { "src": "**", "use": "@now/static" }
+  ],
+  "routes": [
+    {
+      "src": "/(assets/.+|.+\\.css|.+\\.js)",
+      "headers": { "cache-control": "max-age=31536000,immutable" },
+      "dest": "/$1"
+    },
+    {
+      "src": "/(.*).html",
+      "headers": { "cache-control": "public,max-age=0,must-revalidate" },
+      "dest": "/$1.html"
+    },
+    {
+      "src": "/(.*)",
+      "headers": { "cache-control": "public,max-age=0,must-revalidate" },
+      "dest": "/index.html"
+    }
+  ]
+}

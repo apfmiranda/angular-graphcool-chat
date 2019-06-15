@@ -3,7 +3,7 @@ import { AuthService } from './core/services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { take } from 'rxjs/operators';
 import { ErrorService } from './core/services/error.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({

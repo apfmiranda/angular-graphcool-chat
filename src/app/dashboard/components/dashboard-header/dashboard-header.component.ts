@@ -1,7 +1,8 @@
 import { BaseComponent } from './../../../shared/components/base.component';
 import { Component, Input } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { MatSidenav, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSidenav } from '@angular/material/sidenav';
 
 import { AuthService } from './../../../core/services/auth.service';
 

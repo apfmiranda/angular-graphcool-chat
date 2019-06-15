@@ -1,18 +1,17 @@
-import { ChatMessageComponent } from './../chat-message/chat-message.component';
-import { BaseComponent } from './../../../shared/components/base.component';
-import { ChatService } from './../../services/chat.service';
-import { AuthService } from './../../../core/services/auth.service';
-import { MessageService } from './../../services/message.service';
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Subscription, Observable, of } from 'rxjs';
-import { map, mergeMap, tap, take } from 'rxjs/operators';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-
-import { Chat } from '../../models/chat.model';
-import { Message } from './../../models/message.model';
-import { UserService } from 'src/app/core/services/user.service';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Observable, of, Subscription } from 'rxjs';
+import { map, mergeMap, take, tap } from 'rxjs/operators';
 import { User } from 'src/app/core/models/user.model';
+import { UserService } from 'src/app/core/services/user.service';
+import { Chat } from '../../models/chat.model';
+import { AuthService } from './../../../core/services/auth.service';
+import { BaseComponent } from './../../../shared/components/base.component';
+import { Message } from './../../models/message.model';
+import { ChatService } from './../../services/chat.service';
+import { MessageService } from './../../services/message.service';
+import { ChatMessageComponent } from './../chat-message/chat-message.component';
 
 @Component({
   selector: 'app-chat-window',
@@ -27,7 +26,7 @@ export class ChatWindowComponent extends BaseComponent<Message> implements OnIni
   titleBefore: string;
   recipienteId: string = null;
   alreadyLoadedMessages = false;
-  @ViewChild('content') private content: ElementRef;
+  @ViewChild('content', { static:false }) private content: ElementRef;
   @ViewChildren(ChatMessageComponent) private messagesQueryList: QueryList<ChatMessageComponent>;
   private subscriptions: Subscription[] = [];
 

@@ -1,7 +1,7 @@
 import { take } from 'rxjs/operators';
 import { DialogConfirmData } from './dialog-confirm/dialog-confirm/dialog-confirm-data.interface';
 import { DialogConfirmComponent } from './dialog-confirm/dialog-confirm/dialog-confirm.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from './../../core/services/auth.service';
 export class BaseComponent<T extends {id: number | string}> {
 

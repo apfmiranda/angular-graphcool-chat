@@ -5,7 +5,7 @@ import { ChatService } from './../../services/chat.service';
 import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { Chat } from '../../models/chat.model';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-chat-list',

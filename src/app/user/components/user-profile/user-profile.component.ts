@@ -4,7 +4,8 @@ import { Component, OnInit, HostBinding } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { User } from 'src/app/core/models/user.model';
 import { UserService } from 'src/app/core/services/user.service';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ImagePreviewComponent } from 'src/app/shared/components/image-preview/image-preview.component';
 
 @Component({

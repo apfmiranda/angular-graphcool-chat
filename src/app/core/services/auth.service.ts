@@ -1,18 +1,18 @@
-import { UserService } from 'src/app/core/services/user.service';
-import { GraphQLModule } from './../../graphql.module';
-import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, throwError, of } from 'rxjs';
+import { Router } from '@angular/router/router';
 import { Apollo } from 'apollo-angular';
-import { tap, map, catchError, mergeMap, take } from 'rxjs/operators';
 import { Base64 } from 'js-base64';
-
-import { AUTHENTICATE_USER_MUTATION, SIGNUP_USER_MUTATION, LoggedInUserQuery, LOGGED_IN_USER_QUERY } from './auth.graphql';
-import { StorageKeys } from './../../storage-keys';
+import { Observable, of, ReplaySubject, throwError } from 'rxjs';
+import { catchError, map, mergeMap, take, tap } from 'rxjs/operators';
+import { UserService } from 'src/app/core/services/user.service';
 import { User } from '../models/user.model';
+import { GraphQLModule } from './../../graphql.module';
+import { StorageKeys } from './../../storage-keys';
+import { AUTHENTICATE_USER_MUTATION, LoggedInUserQuery, LOGGED_IN_USER_QUERY, SIGNUP_USER_MUTATION } from './auth.graphql';
 
-@Injectable({
-  providedIn: 'root'
+
+@Injectable( {
+ providedIn: 'root'
 })
 export class AuthService {
 
@@ -69,7 +69,7 @@ export class AuthService {
     );
   }
 
-  autoLogin(): Observable<void> {
+  autoLogin(): Observable<{}> {
     if (!this.keepSigned) {
       this.logout();
       return of();

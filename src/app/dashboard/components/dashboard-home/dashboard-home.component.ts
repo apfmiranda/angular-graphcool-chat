@@ -1,6 +1,7 @@
 import { BaseComponent } from './../../../shared/components/base.component';
 import { Component } from '@angular/core';
-import { MatSidenav, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSidenav } from '@angular/material/sidenav';
 
 import { AuthService } from './../../../core/services/auth.service';
 
